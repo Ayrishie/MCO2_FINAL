@@ -213,7 +213,7 @@ public class RegularVendingMachine {
         System.out.println("[DEBUG] itemSlots contents: " + item.getItemSlots());
         System.out.println("[DEBUG] SLOT NUMBER " + slot);
 
-
+        int selectedItemIndex = slot - 1;
 
         System.out.println("[DEBUG] printReceipt() called with slot: " + slot + ", quantity: " + quantity + ", and change: " + change);
 
@@ -242,7 +242,7 @@ public class RegularVendingMachine {
         System.out.println(ANSI_RED + "==============================================");
         System.out.println("|           RAIO  Vending Machine            |");
         System.out.println("|============================================|");
-        System.out.println("| " + ANSI_YELLOW + " Item purchased: " + item.getItemSlots() + ANSI_RED);
+        System.out.println("| " + ANSI_YELLOW + " Item purchased: " + item.getItemSlots().get(selectedItemIndex) + ANSI_RED);
         System.out.println("|============================================|");
         System.out.println("|  " + ANSI_YELLOW + "Before quantity:         " + (quantity + 1) + ANSI_YELLOW);
         System.out.println("|  " + ANSI_YELLOW + "After quantity:          " + quantity + ANSI_YELLOW);
