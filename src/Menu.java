@@ -259,9 +259,7 @@ public class Menu {
      * The function allows the user to test vending machine features by selecting an item and making a
      * payment.
      */
-
     private void testVendingFeatures() {
-
         vendingMachine.displayItems();
 
         System.out.print("Enter the item number you want to purchase (1-" + vendingMachine.getSlotCount() + "): ");
@@ -284,7 +282,6 @@ public class Menu {
             return;
         }
 
-
         vendingMachine.displayUpdatedDenominationQuantities();
         System.out.print("Enter the payment denomination (1-9): ");
         int paymentDenomination;
@@ -303,18 +300,15 @@ public class Menu {
             return;
         }
 
-        if (vendingMachine.processTransaction(slotNumber, paymentDenomination)) {
-            System.out.println();
-            System.out.println("Transaction completed successfully.");
-            System.out.println();
+
+        // Call the processTransaction method with the adjusted slot number and payment denomination
+        boolean transactionSuccessful = vendingMachine.processTransaction(slotNumber, paymentDenomination);
+        // Optionally, you can display a message based on the success of the transaction
+        if (transactionSuccessful) {
+            System.out.println("Transaction successful!");
         } else {
-            System.out.println();
-            System.out.println("Transaction failed.");
-            System.out.println();
+            System.out.println("Transaction failed. Please try again.");
         }
     }
-
-
-
 
 }

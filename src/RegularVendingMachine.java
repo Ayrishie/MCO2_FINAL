@@ -387,129 +387,111 @@ public class RegularVendingMachine implements ProcessTransaction {
      * denomination in the denominationValues list.
      * @return The method is returning a boolean value.
      */
+
     @Override
-    public boolean processTransaction(int slot, int paymentDenomination) throws IllegalArgumentException {
+    public boolean processTransaction(int slot, int paymentDenomination) {
         try {
-
-            System.out.println("[DEBUG] processTransaction() called with slot: " + slot + " and denomination: " + paymentDenomination);
-            System.out.println("[DEBUG] Items list size: " + Item.getSLOT_COUNT());
-            System.out.println("[DEBUG] DenominationValues list size: " + denominationValues.size());
-
-        // Adjust the index to match the list (0-based index)
+            // Adjust the index to match the list (0-based index)
             Item item = items.get(slot - 1);
 
-
-            System.out.println("[DEBUG] Item: " + item);
-            System.out.println("[DEBUG] Slot: " + slot);
-            System.out.println("[DEBUG] Items Size: " + Item.getSLOT_COUNT());
-
-            if (slot < 0 || slot >= Item.getSLOT_COUNT()) {
+            if (slot < 1 || slot > Item.getSLOT_COUNT()) {
                 System.out.println("Invalid item slot: " + slot);
                 return false;
             }
 
-        // Ensure that the item has valid prices
-        List<Double> itemPrices = item.getItemPrices();
+            // Ensure that the item has valid prices
+            List<Double> itemPrices = item.getItemPrices();
 
-            System.out.println("[DEBUG] Item Prices: " + itemPrices);
+            if (itemPrices == null || itemPrices.isEmpty()) {
+                System.out.println("Item prices not set for slot: " + slot);
+                return false;
+            }
 
+            // Ensure that the slot is valid for the item's price list
+            if (slot < 1 || slot > itemPrices.size()) {
+                System.out.println("Invalid slot for item prices: " + slot);
+                return false;
+            }
 
-        if (itemPrices == null || itemPrices.isEmpty()) {
-            System.out.println("Item prices not set for slot: " + slot);
-            return false;
-        }
+            double price = itemPrices.get(slot - 1);
 
-        // Ensure that the slot is valid for the item's price list
-        if (slot < 1 || slot > itemPrices.size()) {
-            System.out.println("Invalid slot for item prices: " + slot);
-            return false;
-        }
-
-
-        double price = itemPrices.get(slot - 1);
-
-            System.out.println("[DEBUG] Price: " + price);
-
-
-        if (price == Item.getDEFAULT_PRICE()) {
-            System.out.println("Item price not set.");
-            return false;
-        }
+            if (price == Item.getDEFAULT_PRICE()) {
+                System.out.println("Item price not set.");
+                return false;
+            }
 
             int quantity = item.getItemQuantities().get(slot - 1);
             if (quantity <= 0) {
-            System.out.println("Item out of stock.");
-            return false;
-        }
-
-        if (items.isEmpty()) {
-            System.out.println("No items in the machine.");
-            return false;
-        }
-
-        double paymentAmount = denominationValues.get(paymentDenomination - 1); // Retrieve payment amount based on denomination
-
-        while (paymentAmount < price) {
-            System.out.println("Current payment: " + paymentAmount);
-            System.out.println("Remaining amount: " + (price - paymentAmount));
-            System.out.println("Please enter the additional payment amount:");
-
-            int additionalPaymentDenomination = scanner.nextInt();
-
-            if (additionalPaymentDenomination == 0) {
-                System.out.println("Transaction canceled.");
+                System.out.println("Item out of stock.");
                 return false;
             }
 
-            double additionalPayment = denominationValues.get(additionalPaymentDenomination - 1); // Retrieve payment amount based on additional payment denomination
-            paymentAmount += additionalPayment;
-        }
-
-        double change = paymentAmount - price; // Calculate the change
-
-        if (change < 0) {
-            System.out.println("Insufficient payment. Please add more to the payment or enter 0 to cancel.");
-            int additionalPayment = scanner.nextInt();
-
-            if (additionalPayment == 0) {
-                System.out.println("Transaction canceled.");
+            if (items.isEmpty()) {
+                System.out.println("No items in the machine.");
                 return false;
             }
 
-            paymentAmount += additionalPayment;
-            change = paymentAmount - price;
+            double paymentAmount = denominationValues.get(paymentDenomination - 1); // Retrieve payment amount based on denomination
+
+            while (paymentAmount < price) {
+                System.out.println("Current payment: " + paymentAmount);
+                System.out.println("Remaining amount: " + (price - paymentAmount));
+                System.out.println("Please enter the additional payment amount:");
+
+                int additionalPaymentDenomination = scanner.nextInt();
+
+                if (additionalPaymentDenomination == 0) {
+                    System.out.println("Transaction canceled.");
+                    return false;
+                }
+
+                double additionalPayment = denominationValues.get(additionalPaymentDenomination - 1); // Retrieve payment amount based on additional payment denomination
+                paymentAmount += additionalPayment;
+            }
+
+            double change = paymentAmount - price; // Calculate the change
 
             if (change < 0) {
-                System.out.println("Still insufficient payment. Transaction canceled.");
-                return false;
+                System.out.println("Insufficient payment. Please add more to the payment or enter 0 to cancel.");
+                int additionalPayment = scanner.nextInt();
+
+                if (additionalPayment == 0) {
+                    System.out.println("Transaction canceled.");
+                    return false;
+                }
+
+                paymentAmount += additionalPayment;
+                change = paymentAmount - price;
+
+                if (change < 0) {
+                    System.out.println("Still insufficient payment. Transaction canceled.");
+                    return false;
+                }
             }
-        }
 
-        System.out.println(quantity + "quantity");
+            // Update the denomination quantities and calculate the change amount
+            giveChange(change);
 
-        // Update the denomination quantities and calculate the change amount
-        giveChange(change);
+            // Update quantities in item
+            item.getItemQuantities().set(slot - 1, quantity - 1);
 
-        // Update quantities in item
-        item.getItemQuantities().set(slot, quantity - 1);
+            transactionCount++;
+            totalSales += paymentAmount - change;
+            int initialQuantity = item.getInitialItemQuantities().get(slot - 1);
+            int soldQuantity = this.soldItemQuantities.get(slot - 1);
+            item.getInitialItemQuantities().set(slot - 1, initialQuantity - 1);
+            this.soldItemQuantities.set(slot - 1, soldQuantity + 1);
 
-        transactionCount++;
-        totalSales += paymentAmount - change;
-        int initialQuantity = item.getInitialItemQuantities().get(slot);
-        int soldQuantity = this.soldItemQuantities.get(slot);  // Changed this line
-        item.getInitialItemQuantities().set(slot, initialQuantity - 1);
-        this.soldItemQuantities.set(slot, soldQuantity + 1);
+            printReceipt(slot, quantity - 1, change); // Pass the updated quantity of the item
+            displayItems(); // Call the displayItems() function to show the updated item quantities
 
-        printReceipt(slot, quantity - 1, change); // Pass the updated quantity of the item
-        displayItems(); // Call the displayItems() function to show the updated item quantities
-
-        return true;
-    } catch (IndexOutOfBoundsException e) {
+            return true;
+        } catch (IndexOutOfBoundsException e) {
             System.out.println("Error at slot: " + slot + ", denomination: " + paymentDenomination);
             System.out.println("Error: " + e.getMessage());
-        return false;
+            return false;
+        }
     }
-}
 
 
 
