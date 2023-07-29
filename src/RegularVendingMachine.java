@@ -213,7 +213,7 @@ public class RegularVendingMachine {
         System.out.println("[DEBUG] itemSlots contents: " + item.getItemSlots());
         System.out.println("[DEBUG] SLOT NUMBER " + slot);
 
-        int selectedItemIndex = slot - 1;
+        int selectedItemIndex = slot;
 
         System.out.println("[DEBUG] printReceipt() called with slot: " + slot + ", quantity: " + quantity + ", and change: " + change);
 
