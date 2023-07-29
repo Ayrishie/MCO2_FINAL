@@ -24,6 +24,8 @@ public class RegularVendingMachine {
     private final Scanner scanner;
 
     private List<String> denominationNames;
+    private List<Item> items;
+
 
     /**
      * Constructs a RegularVendingMachine object and initializes its fields.
@@ -43,36 +45,16 @@ public class RegularVendingMachine {
             soldItemQuantities.add(0);
         }
         scanner = new Scanner(System.in);
+        items = new ArrayList<>();
 
         setDenominationValues();
-        setItemCalorieAndCapacity();
         setItemSlot();
         initializeDenominationQuantities();
         setDenominationNames();
-        setItemCalories();  // Call the method to set calorie counts
-        setItemPrices();   // Call the method to set item prices
         setDenominationQuantities();
+        initializeItems();
     }
 
-    /**
-     * Sets the item slots in the vending machine.
-     */
-    private void setItemCalorieAndCapacity() {
-        itemSlots.add("Bread");
-        itemSlots.add("Pizza Sauce");
-        itemSlots.add("Cheese");
-        itemSlots.add("Meat toppings");
-        itemSlots.add("Vegetable toppings");
-        itemSlots.add("Condiments");
-        itemSlots.add("Box");
-        itemSlots.add("Softdrink");
-
-        for (int i = 0; i < SLOT_COUNT; i++) {
-            itemQuantities.add(ITEM_CAPACITY); // Set initial quantity to 10
-            itemCalories.add(0); // Add a default calorie value of 0 for each item
-            
-        }
-    }
 
     /**
      * Sets the names of the denominations used in the vending machine.
@@ -126,54 +108,7 @@ public class RegularVendingMachine {
         }
     }
 
-    /**
-     * Displays the item calories and allows the user to set the calorie count for each item.
-     */
-    public void setItemCalories() {
-        System.out.println();
-        System.out.println("\t####################################");
-        System.out.println("\t------------------------------------");
-        System.out.println("\t \u001B[33m|===============================|\u001B[0m");
-        System.out.println("\t \u001B[33m|       Set Item Calories       |\u001B[0m");
-        System.out.println("\t \u001B[33m|===============================|\u001B[0m");
-        System.out.println();
-        System.out.println("Enter the calories for the available items:");
-        for (int i = 0; i < SLOT_COUNT; i++) {
-            String itemSlot = itemSlots.get(i);
-            System.out.print("\t\t[" + (i + 1) + "]......" + itemSlot + ": ");
-            int calories = scanner.nextInt();
-            itemCalories.set(i, calories);
-        }
-        System.out.println("\t------------------------------------");
-        System.out.println("\t####################################");
-        System.out.println();
-        System.out.println("<.............................................>");
-    }
 
-    /**
-     * Displays the item prices and allows the user to set the price for each item.
-     */
-    public void setItemPrices() {
-        System.out.println();
-        System.out.println("\t####################################");
-        System.out.println("\t------------------------------------");
-        System.out.println("\t \u001B[33m|===============================|\u001B[0m");
-        System.out.println("\t \u001B[33m|       Set Item Prices         |\u001B[0m");
-        System.out.println("\t \u001B[33m|===============================|\u001B[0m");
-        System.out.println();
-        System.out.println("Enter the prices for available items:");
-
-        for (int i = 0; i < SLOT_COUNT; i++) {
-            String itemName = itemSlots.get(i);
-            System.out.print("\t\t    " + (i + 1) + ". (" + itemName + "): ");
-            double price = scanner.nextDouble();
-            itemPrices.set(i, price); // setting of item prices
-        }
-        System.out.println("\t----------------------------------");
-        System.out.println("\t####################################");
-        System.out.println();
-
-    }
 
     /**
      * Displays the denomination quantities and allows the user to set the quantities for each denomination.
@@ -200,6 +135,26 @@ public class RegularVendingMachine {
         System.out.println("<.............................................>");
     }
 
+
+    private void initializeItems() {
+        // Generate lists for initial quantities, current quantities, prices, and sold quantities
+        List<Integer> initialItemQuantities = new ArrayList<>(Collections.nCopies(Item.getSLOT_COUNT(), Item.getITEM_CAPACITY()));
+        List<Integer> itemQuantities = new ArrayList<>(Collections.nCopies(Item.getSLOT_COUNT(), Item.getITEM_CAPACITY()));
+        List<Double> itemPrices = new ArrayList<>(Collections.nCopies(Item.getSLOT_COUNT(), Item.getDEFAULT_PRICE()));
+        List<Integer> soldItemQuantities = new ArrayList<>(Collections.nCopies(Item.getSLOT_COUNT(), 0));
+
+        // Create a new instance of Item using these lists
+        Item item = new Item(scanner, initialItemQuantities, itemQuantities, itemPrices, soldItemQuantities);
+
+        // Initialize item quantities
+        item.initializeItemQuantities();
+
+        // Add the item to the items list
+        items.add(item);
+    }
+
+
+
     /**
      * Displays the items in the vending machine.
      */
@@ -212,19 +167,21 @@ public class RegularVendingMachine {
         System.out.println("\u001B[36m======================================================");
         System.out.println("\u001B[36m|             Vending Machine Items                  |");
         System.out.println("\u001B[36m======================================================");
-
         System.out.printf("\u001B[36m| \u001B[33m%2s. %-20s%-8s%10s  %s%n", "No", "Item", "Quantity", "Price", "Calories   \u001B[36m|");
-        for (int i = 0; i < SLOT_COUNT; i++) {
-            String item = itemSlots.get(i);
-            int quantity = itemQuantities.get(i);
-            double price = itemPrices.get(i);
-            int calories = itemCalories.get(i);
 
-            System.out.printf("\u001B[36m| \u001B[33m%2d. %-20s%8d%13s  %5d  \u001B[36m |%n\u001B[0m", i + 1, item, quantity, "$" + price, calories);
+        for (Item item : items) {
+            for (int i = 0; i < item.getSlotCount(); i++) { // use getSlotCount() instead of directly accessing SLOT_COUNT
+                String itemName = item.getItemSlots().get(i);
+                int quantity = item.getItemQuantities().get(i);
+                double price = item.getItemPrices().get(i);
+                int calories = item.getItemCalories().get(i);
+
+                System.out.printf("\u001B[36m| \u001B[33m%2d. %-20s%8d%13s  %5d  \u001B[36m |%n\u001B[0m", i + 1, itemName, quantity, "$" + price, calories);
+            }
         }
         System.out.println("\u001B[36m|======================================================|");
-
     }
+
 
 
     /**

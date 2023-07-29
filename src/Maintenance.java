@@ -103,3 +103,4 @@ public class Maintenance {
         totalSales = 0; // Reset total payments after dispensing
     }
 }
+
