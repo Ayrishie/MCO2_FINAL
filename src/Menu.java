@@ -259,29 +259,45 @@ public class Menu {
      * The function allows the user to test vending machine features by selecting an item and making a
      * payment.
      */
+
     private void testVendingFeatures() {
         vendingMachine.displayItems();
 
         System.out.print("Enter the item number you want to purchase (1-" + vendingMachine.getSlotCount() + "): ");
-        int itemNumber = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        int itemNumber;
+        if (scanner.hasNextInt()) {
+            itemNumber = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+        } else {
+            System.out.println("Invalid input. Please enter a valid item number.");
+            return;
+        }
 
-        if ((itemNumber < 1) || (itemNumber > 8)){
+        // Adjust the itemNumber value to match zero-based indexing
+        int slotNumber = itemNumber - 1;
+
+        if ((slotNumber < 0) || (slotNumber >= vendingMachine.getSlotCount())) {
             System.out.println("Item slot doesn't exist");
             return;
         }
 
         vendingMachine.displayUpdatedDenominationQuantities();
         System.out.print("Enter the payment denomination (1-9): ");
-        int paymentDenomination = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        int paymentDenomination;
+        if (scanner.hasNextInt()) {
+            paymentDenomination = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+        } else {
+            System.out.println("Invalid input. Please enter a valid payment denomination.");
+            return;
+        }
 
-        if ((paymentDenomination < 1) || (paymentDenomination > 9)){
+        if ((paymentDenomination < 1) || (paymentDenomination > 9)) {
             System.out.println("Denomination doesn't exist");
             return;
         }
 
-        if (vendingMachine.processTransaction(itemNumber - 1, paymentDenomination)) {
+        if (vendingMachine.processTransaction(slotNumber, paymentDenomination)) {
             System.out.println();
             System.out.println("Transaction completed successfully.");
             System.out.println();
@@ -291,5 +307,6 @@ public class Menu {
             System.out.println();
         }
     }
+
 
 }

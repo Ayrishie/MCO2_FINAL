@@ -8,13 +8,13 @@ public class Item {
     private static final int SLOT_COUNT = 8;
     private static final double DEFAULT_PRICE = 0.0;
     private static final int ITEM_CAPACITY = 10;
-    private List<Integer> soldItemQuantities;
-    private List<Integer> initialItemQuantities;
-    private List<String> itemSlots;
+    private final List<Integer> soldItemQuantities;
+    private final List<Integer> initialItemQuantities;
+    private final List<String> itemSlots;
     private List<Integer> itemQuantities;
-    private List<Double> itemPrices;
-    private List<Integer> itemCalories;
-    private Scanner scanner;
+    private final List<Double> itemPrices;
+    private final List<Integer> itemCalories;
+    private final Scanner scanner;
 
     public Item(Scanner scanner, List<Integer> initialItemQuantities, List<Integer> itemQuantities,
                 List<Double> itemPrices, List<Integer> soldItemQuantities) {
@@ -26,7 +26,7 @@ public class Item {
         }
 
         this.initialItemQuantities = new ArrayList<>(initialItemQuantities);
-        this.itemQuantities = new ArrayList<>(itemQuantities);
+        this.itemQuantities = itemQuantities; //this.itemQuantities = new ArrayList<>(itemQuantities);
         this.itemPrices = new ArrayList<>(itemPrices);
         this.soldItemQuantities = new ArrayList<>(soldItemQuantities);
         this.scanner = scanner;
@@ -39,6 +39,9 @@ public class Item {
         return itemPrices;
     }
 
+    public List<Integer> getSoldItemQuantities() {
+        return this.soldItemQuantities;
+    }
 
     public List<Integer> getItemCalories () {
         return itemCalories;
@@ -94,11 +97,17 @@ public class Item {
         setItemCalorieAndCapacity();
         setItemCalories();
         setItemPrices();
+
+        // Initialize itemQuantities list with the default capacity
+        itemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
+
         for (int i = 0; i < SLOT_COUNT; i++) {
             initialItemQuantities.add(ITEM_CAPACITY);
+            soldItemQuantities.add(0);
             itemCalories.add(0); // Add a default calorie value of 0 for each item
         }
     }
+
 
 
     /**
