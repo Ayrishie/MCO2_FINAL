@@ -3,7 +3,7 @@ import java.util.*;
 /**
  * A class representing a regular vending machine.
  */
-public class RegularVendingMachine {
+public class RegularVendingMachine implements ProcessTransaction {
     private static final int SLOT_COUNT = 8;
     private static final int ITEM_CAPACITY = 10;
     private static final int DENOMINATION_COUNT = 9;
@@ -149,9 +149,6 @@ public class RegularVendingMachine {
         System.out.println();
         System.out.println("<.............................................>");
     }
-
-
-
 
 
     /**
@@ -390,6 +387,7 @@ public class RegularVendingMachine {
      * denomination in the denominationValues list.
      * @return The method is returning a boolean value.
      */
+    @Override
     public boolean processTransaction(int slot, int paymentDenomination) throws IllegalArgumentException {
         try {
 
@@ -439,8 +437,6 @@ public class RegularVendingMachine {
         }
 
             int quantity = item.getItemQuantities().get(slot - 1);
-
-
             if (quantity <= 0) {
             System.out.println("Item out of stock.");
             return false;
@@ -495,10 +491,7 @@ public class RegularVendingMachine {
         giveChange(change);
 
         // Update quantities in item
-        int hello = item.getItemQuantities().set(slot, quantity - 1);
-
-        System.out.println(hello + "updated: hello");
-
+        item.getItemQuantities().set(slot, quantity - 1);
 
         transactionCount++;
         totalSales += paymentAmount - change;
