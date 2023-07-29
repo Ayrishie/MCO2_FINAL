@@ -27,11 +27,14 @@ public class Item {
 
         this.initialItemQuantities = new ArrayList<>(initialItemQuantities);
         this.itemQuantities = itemQuantities; //this.itemQuantities = new ArrayList<>(itemQuantities);
-        this.itemPrices = new ArrayList<>(itemPrices);
+        //this.itemPrices = new ArrayList<>(itemPrices);
         this.soldItemQuantities = new ArrayList<>(soldItemQuantities);
         this.scanner = scanner;
         itemSlots = new ArrayList<>();
         itemCalories = new ArrayList<>();
+
+        // Initialize itemPrices list with default prices
+        this.itemPrices = new ArrayList<>(Collections.nCopies(SLOT_COUNT, DEFAULT_PRICE));
     }
 
 
@@ -64,9 +67,9 @@ public class Item {
     public List<Integer> getItemQuantities() {
         return itemQuantities;
     }
-    public static int getSLOT_COUNT() {
-        return SLOT_COUNT;
-    }
+   public static int getSLOT_COUNT() {
+         return SLOT_COUNT;
+   }
 
     public static int getITEM_CAPACITY() {
         return ITEM_CAPACITY;
@@ -113,7 +116,7 @@ public class Item {
     /**
      * Sets the item slots in the vending machine.
      */
-    private void setItemCalorieAndCapacity() {
+    public void setItemCalorieAndCapacity() {
         itemSlots.add("Bread");
         itemSlots.add("Pizza Sauce");
         itemSlots.add("Cheese");
@@ -128,6 +131,7 @@ public class Item {
             itemCalories.add(0); // Add a default calorie value of 0 for each item
 
         }
+
     }
 
     /**

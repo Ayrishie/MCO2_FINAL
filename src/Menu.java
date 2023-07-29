@@ -261,6 +261,7 @@ public class Menu {
      */
 
     private void testVendingFeatures() {
+
         vendingMachine.displayItems();
 
         System.out.print("Enter the item number you want to purchase (1-" + vendingMachine.getSlotCount() + "): ");
@@ -272,14 +273,17 @@ public class Menu {
             System.out.println("Invalid input. Please enter a valid item number.");
             return;
         }
-
         // Adjust the itemNumber value to match zero-based indexing
-        int slotNumber = itemNumber - 1;
+        int slotNumber = itemNumber;
+
+        System.out.println("[menu DEBUG] Slot number: " + slotNumber);
+        System.out.println("[menu DEBUG] Slot count: " + vendingMachine.getSlotCount());
 
         if ((slotNumber < 0) || (slotNumber >= vendingMachine.getSlotCount())) {
             System.out.println("Item slot doesn't exist");
             return;
         }
+
 
         vendingMachine.displayUpdatedDenominationQuantities();
         System.out.print("Enter the payment denomination (1-9): ");
@@ -291,6 +295,8 @@ public class Menu {
             System.out.println("Invalid input. Please enter a valid payment denomination.");
             return;
         }
+
+        System.out.println("[menu DEBUG] Payment Denomination: " + paymentDenomination);
 
         if ((paymentDenomination < 1) || (paymentDenomination > 9)) {
             System.out.println("Denomination doesn't exist");
@@ -307,6 +313,7 @@ public class Menu {
             System.out.println();
         }
     }
+
 
 
 }
