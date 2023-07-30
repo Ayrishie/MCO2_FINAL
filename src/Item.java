@@ -10,7 +10,7 @@ public class Item {
     private static final int ITEM_CAPACITY = 10;
     private final List<Integer> soldItemQuantities;
     private final List<Integer> initialItemQuantities;
-    private final List<String> itemSlots;
+    private final List<String> itemNames;
     private List<Integer> itemQuantities;
     private final List<Double> itemPrices;
     private final List<Integer> itemCalories;
@@ -30,7 +30,7 @@ public class Item {
         //this.itemPrices = new ArrayList<>(itemPrices);
         this.soldItemQuantities = new ArrayList<>(soldItemQuantities);
         this.scanner = scanner;
-        itemSlots = new ArrayList<>();
+        itemNames = new ArrayList<>();
         itemCalories = new ArrayList<>();
 
         // Initialize itemPrices list with default prices
@@ -61,8 +61,8 @@ public class Item {
     public double getDefaultPrice() {
         return DEFAULT_PRICE;
     }
-    public List<String> getItemSlots() {
-        return itemSlots;
+    public List<String> getitemNames() {
+        return itemNames;
     }
     public List<Integer> getItemQuantities() {
         return itemQuantities;
@@ -117,14 +117,14 @@ public class Item {
      * Sets the item slots in the vending machine.
      */
     public void setItemCalorieAndCapacity() {
-        itemSlots.add("Bread");
-        itemSlots.add("Pizza Sauce");
-        itemSlots.add("Cheese");
-        itemSlots.add("Meat toppings");
-        itemSlots.add("Vegetable toppings");
-        itemSlots.add("Condiments");
-        itemSlots.add("Box");
-        itemSlots.add("Softdrink");
+        itemNames.add("Bread");
+        itemNames.add("Pizza Sauce");
+        itemNames.add("Cheese");
+        itemNames.add("Meat toppings");
+        itemNames.add("Vegetable toppings");
+        itemNames.add("Condiments");
+        itemNames.add("Box");
+        itemNames.add("Softdrink");
 
         for (int i = 0; i < SLOT_COUNT; i++) {
             itemQuantities.add(ITEM_CAPACITY); // Set initial quantity to 10
@@ -147,8 +147,8 @@ public class Item {
         System.out.println();
         System.out.println("Enter the calories for the available items:");
         for (int i = 0; i < SLOT_COUNT; i++) {
-            String itemSlot = itemSlots.get(i);
-            System.out.print("\t\t[" + (i + 1) + "]......" + itemSlot + ": ");
+            String itemName = itemNames.get(i);
+            System.out.print("\t\t[" + (i + 1) + "]......" + itemName + ": ");
             try {
                 int calories = scanner.nextInt();
                 if(calories < 0) {
@@ -179,7 +179,7 @@ public class Item {
         System.out.println();
         System.out.println("Enter the prices for available items:");
         for (int i = 0; i < SLOT_COUNT; i++) {
-            String itemName = itemSlots.get(i);
+            String itemName = itemNames.get(i);
             System.out.print("\t\t    " + (i + 1) + ". (" + itemName + "): ");
             try {
                 double price = scanner.nextDouble();

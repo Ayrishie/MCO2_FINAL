@@ -274,7 +274,7 @@ public class Menu {
             return;
         }
         // Adjust the itemNumber value to match zero-based indexing
-        int slotNumber = itemNumber - 1;
+        int slotNumber = itemNumber;
 
         System.out.println("[menu DEBUG] Slot number: " + slotNumber);
         System.out.println("[menu DEBUG] Slot count: " + vendingMachine.getSlotCount());

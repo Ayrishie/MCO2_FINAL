@@ -9,7 +9,6 @@ public class RegularVendingMachine {
     private static final int DENOMINATION_COUNT = 9;
     private static final double DEFAULT_PRICE = 0.0;
     private List<Integer> denominationValues;
-    private List<String> itemSlots;
     private List<Integer> itemQuantities;
     private List<Double> itemPrices;
     private List<Integer> itemCalories;  // New list to hold calorie counts
@@ -34,7 +33,7 @@ public class RegularVendingMachine {
      * Constructs a RegularVendingMachine object and initializes its fields.
      */
     public RegularVendingMachine() {
-        itemSlots = new ArrayList<>();
+        items = new ArrayList<>();
         itemQuantities = new ArrayList<>();
         itemPrices = new ArrayList<>();
         itemCalories = new ArrayList<>();  // Initialize the calorie list
@@ -48,7 +47,7 @@ public class RegularVendingMachine {
             soldItemQuantities.add(0);
         }
         scanner = new Scanner(System.in);
-        items = new ArrayList<>();
+
 
         Scanner scanner = new Scanner(System.in);
         ArrayList<Integer> quantities = new ArrayList<>(Arrays.asList(0, 0, 0, 0, 0, 0, 0, 0));
@@ -61,7 +60,6 @@ public class RegularVendingMachine {
         this.item.setItemCalorieAndCapacity();
 
         setDenominationValues();
-        setItemSlot();
         initializeDenominationQuantities();
         setDenominationNames();
         setDenominationQuantities();
@@ -103,16 +101,6 @@ public class RegularVendingMachine {
     }
 
 
-    /**
-     * Sets the slots of the items in the vending machine.
-     */
-    private void setItemSlot() {
-        for (int i = 0; i < SLOT_COUNT; i++) {
-            itemPrices.add(DEFAULT_PRICE);
-            System.out.println(itemPrices + "System.out.println(itemPrices);");
-        }
-
-    }
 
     /**
      * Initializes the quantities of the denominations used in the vending machine.
@@ -170,7 +158,7 @@ public class RegularVendingMachine {
 
         for (Item item : items) {
             for (int i = 0; i < item.getSlotCount(); i++) { // use getSlotCount() instead of directly accessing SLOT_COUNT
-                String itemName = item.getItemSlots().get(i);
+                String itemName = item.getitemNames().get(i);
                 int quantity = item.getItemQuantities().get(i);
                 double price = item.getItemPrices().get(i);
                 int calories = item.getItemCalories().get(i);
@@ -210,7 +198,7 @@ public class RegularVendingMachine {
     private void printReceipt(int slot, int quantity, double change) {
 
         item.setItemCalorieAndCapacity();
-        System.out.println("[DEBUG] itemSlots contents: " + item.getItemSlots());
+        System.out.println("[DEBUG] itemNames contents: " + item.getitemNames());
         System.out.println("[DEBUG] SLOT NUMBER " + slot);
 
         int selectedItemIndex = slot;
@@ -223,11 +211,10 @@ public class RegularVendingMachine {
             return;
         }
 
-        if (item.getItemSlots().isEmpty()) {
-            System.out.println("[DEBUG] Error: itemSlots list is empty.");
+        if (item.getitemNames().isEmpty()) {
+            System.out.println("[DEBUG] Error: itemNames list is empty.");
             return;
         }
-
 
 
         System.out.println("[DEBUG] SA WAKAS.");
@@ -242,7 +229,7 @@ public class RegularVendingMachine {
         System.out.println(ANSI_RED + "==============================================");
         System.out.println("|           RAIO  Vending Machine            |");
         System.out.println("|============================================|");
-        System.out.println("| " + ANSI_YELLOW + " Item purchased: " + item.getItemSlots().get(selectedItemIndex) + ANSI_RED);
+        System.out.println("| " + ANSI_YELLOW + " Item purchased: " + item.getitemNames().get(selectedItemIndex) + ANSI_RED);
         System.out.println("|============================================|");
         System.out.println("|  " + ANSI_YELLOW + "Before quantity:         " + (quantity + 1) + ANSI_YELLOW);
         System.out.println("|  " + ANSI_YELLOW + "After quantity:          " + quantity + ANSI_YELLOW);
@@ -284,7 +271,7 @@ public class RegularVendingMachine {
 
         for(Item item: items) {
             for (int i = 0; i < item.getSlotCount(); i++) {
-                String itemName = item.getItemSlots().get(i);
+                String itemName = item.getitemNames().get(i);
                 int initialQuantity = item.getInitialItemQuantities().get(i);
                 int soldQuantity = item.getSoldItemQuantities().get(i);
 
@@ -368,7 +355,10 @@ public class RegularVendingMachine {
         item.initializeItemQuantities();
 
         // Add the item to the items list
-        items.add(item);
+        for (int i = 0; i < 8; i++) {
+            items.add(item);
+        }
+
 
         itemsInitialized = true;
     }
@@ -391,19 +381,19 @@ public class RegularVendingMachine {
      * @return The method is returning a boolean value.
      */
     public boolean processTransaction(int slot, int paymentDenomination) throws IllegalArgumentException {
+
+        // Adjust the index to match the list (0-based index)
+        System.out.println("start");
+        Item item = items.get( slot);
+        System.out.println("[DEBUG] Item: " + item);
+        System.out.println("[DEBUG] Slot: " + slot);
+        System.out.println("[DEBUG] Items Size: " + Item.getSLOT_COUNT());
         try {
 
             System.out.println("[DEBUG] processTransaction() called with slot: " + slot + " and denomination: " + paymentDenomination);
             System.out.println("[DEBUG] Items list size: " + Item.getSLOT_COUNT());
             System.out.println("[DEBUG] DenominationValues list size: " + denominationValues.size());
 
-        // Adjust the index to match the list (0-based index)
-            Item item = items.get(slot - 1);
-
-
-            System.out.println("[DEBUG] Item: " + item);
-            System.out.println("[DEBUG] Slot: " + slot);
-            System.out.println("[DEBUG] Items Size: " + Item.getSLOT_COUNT());
 
             if (slot < 0 || slot >= Item.getSLOT_COUNT()) {
                 System.out.println("Invalid item slot: " + slot);
@@ -495,10 +485,7 @@ public class RegularVendingMachine {
         giveChange(change);
 
         // Update quantities in item
-        int hello = item.getItemQuantities().set(slot, quantity - 1);
-
-        System.out.println(hello + "updated: hello");
-
+        item.getItemQuantities().set(slot - 1, quantity - 1);
 
         transactionCount++;
         totalSales += paymentAmount - change;
@@ -507,7 +494,9 @@ public class RegularVendingMachine {
         item.getInitialItemQuantities().set(slot, initialQuantity - 1);
         this.soldItemQuantities.set(slot, soldQuantity + 1);
 
-        printReceipt(slot, quantity - 1, change); // Pass the updated quantity of the item
+
+        // minus -1
+        printReceipt(slot - 1, quantity - 1, change); // Pass the updated quantity of the item
         displayItems(); // Call the displayItems() function to show the updated item quantities
 
         return true;
