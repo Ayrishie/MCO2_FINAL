@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -13,7 +14,7 @@ public class Maintenance {
     /**The `public Menu()` constructor is initializing the `scanner`, `vendingMachine`, and
      * `maintenance` objects.
      */
-    public Maintenance() {
+    public Maintenance(List<String> itemNames) {
         vendingMachine = null;
         scanner = new Scanner(System.in);
         totalSales = 0.0; // Initialize total payments to 0

@@ -1,4 +1,7 @@
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -17,8 +20,10 @@ public class Menu {
      */
     public Menu() {
         scanner = new Scanner(System.in);
+
+        List<String> itemNames = new ArrayList<>(Arrays.asList("Bread", "Pizza Sauce", "Cheese", "Meat toppings", "Vegetable toppings", "Condiments", "Box", "Softdrink"));
         vendingMachine = null;
-        maintenance = new Maintenance(); // Create an instance of Maintenance
+        maintenance = new Maintenance(itemNames); // Create an instance of Maintenance
     }
 
     /**
@@ -263,8 +268,21 @@ public class Menu {
         vendingMachine.displayItems();
 
         System.out.print("Enter the item number you want to purchase (1-" + vendingMachine.getSlotCount() + "): ");
+<<<<<<< Updated upstream
         int itemNumber = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
+=======
+        int itemNumber;
+        if (scanner.hasNextInt()) {
+            itemNumber = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+        } else {
+            System.out.println("Invalid input. Please enter a valid item number.");
+            return;
+        }
+        // Adjust the itemNumber value to match zero-based indexing
+        int slotNumber = itemNumber - 1;
+>>>>>>> Stashed changes
 
         if ((itemNumber < 1) || (itemNumber > 8)){
             System.out.println("Item slot doesn't exist");
