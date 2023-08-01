@@ -34,6 +34,7 @@ public class RegularVendingMachine {
     public RegularVendingMachine() {
             scanner = new Scanner(System.in);
             items = new ArrayList<>();
+            item = new Item();
             itemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
             initialItemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
             soldItemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
@@ -60,7 +61,7 @@ public class RegularVendingMachine {
             System.out.println("itemCalories size: " + itemCalories.size());
 
 
-            List<String> itemNames = Item.getItemNames();
+            //List<String> itemNames = Item.getItemNames();
             setDenominationValues();
         setDenominationNames();
         setDenominationQuantities();
@@ -215,24 +216,6 @@ public class RegularVendingMachine {
         // Debugging: Print the updated denominationQuantities list
         System.out.println("Updated denominationQuantities: " + denominationQuantities);
     }
-
-
-
-
-
-
-
-    /**
-     * Displays the items in the vending machine.
-     */
-
-    /**
-     * Displays the items in the vending machine.
-     */
-
-
-
-
 
 
 

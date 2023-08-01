@@ -27,7 +27,7 @@ public class Item {
     private List<Integer> soldItemQuantities;
     private List<Integer> initialQuantities;
 
-    public Item(int quantity, double price, int calories) {
+    public Item() {
         this.quantity = quantity;
         this.price = price;
         this.calories = calories;
@@ -39,7 +39,7 @@ public class Item {
             initialQuantities.add(10); // Assuming the default capacity is 10 for all slots
         }
 
-        itemPropertiesMap.put(itemNames.get(quantity - 1), this);
+        itemPropertiesMap.put(itemNames.get(quantity), this);
     }
 
     public static List<String> getItemNames() {
