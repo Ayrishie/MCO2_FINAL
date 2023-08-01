@@ -11,12 +11,21 @@ public class RegularVendingMachine {
     private static final int ITEM_CAPACITY = 10;
     private static final int DENOMINATION_COUNT = 9;
     private static final double DEFAULT_PRICE = 0.0;
+<<<<<<< Updated upstream
+=======
+    private final ArrayList<Integer> itemCalories;
+    private List<String> itemNames;
+>>>>>>> Stashed changes
     private List<Integer> denominationValues;
     private List<String> itemSlots;
     private List<Integer> itemQuantities;
+<<<<<<< Updated upstream
     private List<Double> itemPrices;
     private List<Integer> denominationQuantities;
     private List<Integer> itemCalories;  // New list to hold calorie counts
+=======
+    private Map<String, ItemProperties> itemPropertiesMap; // Map to associate item names with their properties
+>>>>>>> Stashed changes
     private double totalSales;
     private int transactionCount;
     private List<Integer> initialItemQuantities;
@@ -43,7 +52,38 @@ public class RegularVendingMachine {
             soldItemQuantities.add(0);
         }
         scanner = new Scanner(System.in);
+<<<<<<< Updated upstream
 
+=======
+        items = new ArrayList<>();
+        itemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
+        initialItemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
+        soldItemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
+        denominationQuantities = new ArrayList<>(Collections.nCopies(DENOMINATION_COUNT, 0));
+        denominationValues = Arrays.asList(1000, 500, 200, 100, 50, 25, 10, 5, 1);
+        itemCalories = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
+
+        // Create the item properties map and initialize with default values
+        itemPropertiesMap = new HashMap<>();
+        itemPropertiesMap.put("Bread", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Pizza Sauce", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Cheese", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Meat toppings", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Vegetable toppings", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Condiments", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Box", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Softdrink", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+
+        initializeItems();
+
+        System.out.println("itemQuantities size: " + itemQuantities.size());
+        System.out.println("itemPrices size: " + itemPropertiesMap.size());
+        System.out.println("itemNames size: " + itemNames.size());
+        System.out.println("itemCalories size: " + itemCalories.size());
+
+
+        List<String> itemNames = Item.getItemNames();
+>>>>>>> Stashed changes
         setDenominationValues();
         setItemCalorieAndCapacity();
         setItemSlot();
@@ -54,6 +94,7 @@ public class RegularVendingMachine {
         setDenominationQuantities();
     }
 
+<<<<<<< Updated upstream
     /**
      * Sets the item slots in the vending machine.
      */
@@ -66,6 +107,74 @@ public class RegularVendingMachine {
         itemSlots.add("Condiments");
         itemSlots.add("Box");
         itemSlots.add("Softdrink");
+=======
+
+    // Rest of the RegularVendingMachine class
+
+    private static class ItemProperties {
+        private int quantity;
+        private double price;
+        private int calories;
+
+        public ItemProperties(int quantity, double price, int calories) {
+            this.quantity = quantity;
+            this.price = price;
+            this.calories = calories;
+        }
+
+        public double getPrice() {
+            return price;
+        }
+
+        public void setPrice(double price) {
+            this.price = price;
+        }
+
+        public int getCalories() {
+            return calories;
+        }
+
+        public void setCalories(int calories) {
+            this.calories = calories;
+        }
+    }
+
+
+
+    private void initializeItems() {
+        itemNames = Arrays.asList("Bread", "Pizza Sauce", "Cheese", "Meat toppings", "Vegetable toppings", "Condiments", "Box", "Softdrink");
+        List<Integer> itemCalories = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
+
+        // Set the item prices
+        System.out.println("Set Item Prices:");
+        for (String itemName : itemNames) {
+            System.out.print("Enter the price for " + itemName + ": ");
+            double price = scanner.nextDouble();
+            if (price < 0) {
+                System.out.println("Price cannot be negative. Please enter a valid number.");
+                continue;
+            }
+
+            ItemProperties itemProperties = itemPropertiesMap.get(itemName);
+            itemProperties.setPrice(price);
+        }
+
+        // Set the item calories
+        System.out.println("Set Item Calories:");
+        for (String itemName : itemNames) {
+            System.out.print("Enter the calories for " + itemName + ": ");
+            int calories = scanner.nextInt();
+            if (calories < 0) {
+                System.out.println("Calories cannot be negative. Please enter a valid number.");
+                continue;
+            }
+
+            ItemProperties itemProperties = itemPropertiesMap.get(itemName);
+            itemProperties.setCalories(calories);
+        }
+    }
+
+>>>>>>> Stashed changes
 
         for (int i = 0; i < SLOT_COUNT; i++) {
             itemQuantities.add(ITEM_CAPACITY); // Set initial quantity to 10
@@ -205,6 +314,12 @@ public class RegularVendingMachine {
      */
 
     public void displayItems() {
+<<<<<<< Updated upstream
+=======
+        // Print debug information
+        System.out.println("Number of items: " + items.size());
+
+>>>>>>> Stashed changes
         System.out.println();
         System.out.println();
         System.out.println();
@@ -220,11 +335,25 @@ public class RegularVendingMachine {
             double price = itemPrices.get(i);
             int calories = itemCalories.get(i);
 
+<<<<<<< Updated upstream
             System.out.printf("\u001B[36m| \u001B[33m%2d. %-20s%8d%13s  %5d  \u001B[36m |%n\u001B[0m", i + 1, item, quantity, "$" + price, calories);
+=======
+        for (Item item : items) {
+            for (int i = 0; i < SLOT_COUNT; i++) { // use getSlotCount() instead of directly accessing SLOT_COUNT
+                String itemName = Item.getItemNames().get(i); // Get the item name from itemNames list
+                Item.ItemProperties itemProperties = Item.getItemProperties(itemName); // Get the ItemProperties for this item
+                int quantity = item.getQuantity();
+                double price = item.getPrice();
+                int calories = itemProperties.getCalories(); // Fetch the calories from the ItemProperties
+
+                System.out.printf("\u001B[36m| \u001B[33m%2d. %-20s%8d%13s  %5d  \u001B[36m |%n\u001B[0m", i + 1, itemName, quantity, "$" + price, calories);
+            }
+>>>>>>> Stashed changes
         }
         System.out.println("\u001B[36m|======================================================|");
 
     }
+
 
 
     /**
@@ -253,6 +382,7 @@ public class RegularVendingMachine {
      */
     private void printReceipt(int slot, int quantity, double change) {
 
+<<<<<<< Updated upstream
         // ANSI escape code for color formatting
         String ANSI_RESET = "\u001B[0m";
         String ANSI_RED = "\u001B[31m";
@@ -270,6 +400,50 @@ public class RegularVendingMachine {
         System.out.printf(ANSI_RED + "| Total Transactions " + ANSI_YELLOW + "%d                %n", transactionCount);
         if (change >= 0) {
             System.out.printf(ANSI_RED + "|" + ANSI_YELLOW + "Change: $%.2f              %n", change);
+=======
+
+        String itemName = itemNames.get(slot);
+        ItemProperties itemProperties = itemPropertiesMap.get(itemName);
+
+        System.out.println("[DEBUG] itemNames contents: " + Item.getItemNames());
+        System.out.println("[DEBUG] SLOT NUMBER " + slot);
+
+        System.out.println("[DEBUG] printReceipt() called with slot: " + slot + ", quantity: " + quantity + ", and change: " + change);
+
+        if (slot < 1 || slot > SLOT_COUNT) {
+            System.out.println("[DEBUG] Invalid slot number: " + slot);
+            System.out.println("[DEBUG] Quantity: " + quantity);
+            return;
+        }
+
+        if (Item.getItemNames().isEmpty()) {
+            System.out.println("[DEBUG] Error: itemNames list is empty.");
+            return;
+        }
+
+
+        System.out.println("[DEBUG] SA WAKAS.");
+
+        String ANSI_RESET = "\u001B[0m";
+        String ANSI_RED = "\u001B[31m";
+        String ANSI_YELLOW = "\u001B[33m";
+
+        System.out.println("[DEBUG] ANSI codes initialized.");
+
+        System.out.println("\n==============================================");
+        System.out.println("|           RAIO  Vending Machine            |");
+        System.out.println("|============================================|");
+        System.out.println("| Item purchased: " + itemName);
+        System.out.println("|============================================|");
+        System.out.println("| Before quantity:         " + (quantity + 1));
+        System.out.println("| After quantity:          " + quantity);
+        System.out.println("|============================================|");
+        System.out.printf("| Total Sales: $%.2f             %n", totalSales);
+        System.out.printf("| Total Transactions %d                %n", transactionCount);
+
+        if (change >= 0) {
+            System.out.printf("| Change: $%.2f              %n", change);
+>>>>>>> Stashed changes
         }
         System.out.println(ANSI_RED + "|============================================|" + ANSI_RESET);
         System.out.println("|--------------------------------------------|");
@@ -278,10 +452,19 @@ public class RegularVendingMachine {
         System.out.println("|============================================|");
 
         for (int i = 0; i < denominationQuantities.size(); i++) {
+<<<<<<< Updated upstream
             int denomination = denominationQuantities.get(i);
             System.out.printf("\t\t\u001B[33m %2d.......$%3d: %2d                     %n", i + 1, denominationValues.get(i), denomination);
         }
         System.out.println("\u001B[32m============================================");
+=======
+            int denominationValue = denominationValues.get(i);
+            int denominationQuantity = denominationQuantities.get(i);
+            System.out.println("| " + denominationValue + ":\t" + denominationQuantity);
+        }
+
+        System.out.println("============================================");
+>>>>>>> Stashed changes
     }
 
     /**
@@ -297,16 +480,35 @@ public class RegularVendingMachine {
             int initialQuantity = initialItemQuantities.get(i);
             int soldQuantity = soldItemQuantities.get(i);
 
+<<<<<<< Updated upstream
             System.out.println("\u001B[97m| Item: \u001B[92m" + item);
             System.out.println("\u001B[97m| Before Quantity: \u001B[92m" + initialQuantity);
             System.out.println("\u001B[97m| After Quantity: \u001B[92m" + (initialQuantity - soldQuantity));
             System.out.println("\u001B[97m|----------------------------------");
+=======
+        for (Item item : items) {
+            for (int i = 0; i < SLOT_COUNT; i++) {
+                Object itemName = Item.getItemNames().get(i);
+                int initialQuantity = item.getInitialQuantities().get(i);
+                int soldQuantity = soldItemQuantities.get(i);
+
+                System.out.println("\u001B[97m| Item: \u001B[92m" + itemName);
+                System.out.println("\u001B[97m| Before Quantity: \u001B[92m" + initialQuantity);
+                System.out.println("\u001B[97m| After Quantity: \u001B[92m" + (initialQuantity - soldQuantity));
+                System.out.println("\u001B[97m|----------------------------------");
+            }
+>>>>>>> Stashed changes
         }
         System.out.println("\u001B[97m| Number of transactions: \u001B[92m" + transactionCount);
         System.out.println("\u001B[97m| Total sales: \u001B[92m" + totalSales);
         System.out.println("\u001B[93m|----------------------------------\u001B[0m");
         System.out.println();
     }
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
     /**
      * Returns the number of slots in the vending machine.
      *
@@ -377,6 +579,7 @@ public class RegularVendingMachine {
      * @return The method is returning a boolean value.
      */
     public boolean processTransaction(int slot, int paymentDenomination) throws IllegalArgumentException {
+<<<<<<< Updated upstream
 
         double price = itemPrices.get(slot);
         if (price == DEFAULT_PRICE) {
@@ -385,18 +588,44 @@ public class RegularVendingMachine {
         }
 
         int quantity = itemQuantities.get(slot);
+=======
+        // Adjust the index to match the list (0-based index)
+        Item item = items.get(slot - 1);
+
+        // Get item properties from the itemPropertiesMap
+        String itemName = itemNames.get(slot - 1);
+        ItemProperties itemProperties = itemPropertiesMap.get(itemName);
+
+        // Check if the item is available
+        int quantity = item.getQuantity();
+>>>>>>> Stashed changes
         if (quantity <= 0) {
             System.out.println("Item out of stock.");
             return false;
         }
 
+<<<<<<< Updated upstream
         double paymentAmount = denominationValues.get(paymentDenomination - 1); // Retrieve payment amount based on denomination
 
         while (paymentAmount < price) {
             System.out.println("Current payment: " + paymentAmount);
             System.out.println("Remaining amount: " + (price - paymentAmount));
             System.out.println("Please enter the additional payment amount:");
+=======
+        // Check if the payment denomination is valid
+        if (paymentDenomination < 1 || paymentDenomination > DENOMINATION_COUNT) {
+            System.out.println("Invalid payment denomination.");
+            return false;
+        }
 
+        // Calculate payment amount based on the payment denomination
+        double paymentAmount = denominationValues.get(paymentDenomination - 1);
+>>>>>>> Stashed changes
+
+        // Check if payment amount is sufficient
+        double price = itemProperties.getPrice();
+        if (paymentAmount < price) {
+            System.out.println("Insufficient payment. Please add more to the payment or enter 0 to cancel.");
             int additionalPaymentDenomination = scanner.nextInt();
 
             if (additionalPaymentDenomination == 0) {
@@ -404,30 +633,16 @@ public class RegularVendingMachine {
                 return false;
             }
 
-            double additionalPayment = denominationValues.get(additionalPaymentDenomination - 1); // Retrieve payment amount based on additional payment denomination
-            paymentAmount += additionalPayment;
-        }
+            double additionalPaymentAmount = denominationValues.get(additionalPaymentDenomination - 1);
+            paymentAmount += additionalPaymentAmount;
 
-        double change = paymentAmount - price; // Calculate the change
-
-        if (change < 0) {
-            System.out.println("Insufficient payment. Please add more to the payment or enter 0 to cancel.");
-            int additionalPayment = scanner.nextInt();
-
-            if (additionalPayment == 0) {
-                System.out.println("Transaction canceled.");
-                return false;
-            }
-
-            paymentAmount += additionalPayment;
-            change = paymentAmount - price;
-
-            if (change < 0) {
+            if (paymentAmount < price) {
                 System.out.println("Still insufficient payment. Transaction canceled.");
                 return false;
             }
         }
 
+<<<<<<< Updated upstream
         // Update the denomination quantities and calculate the change amount
         giveChange(change);
 
@@ -444,6 +659,24 @@ public class RegularVendingMachine {
 
         return true;
     }
+=======
+        // Calculate change and give change
+        double change = paymentAmount - price;
+        giveChange(change);
+
+        // Update item quantities and sales
+        item.setQuantity(item.getQuantity() - 1);
+        transactionCount++;
+        totalSales += price;
+
+        // Print receipt and display updated item quantities
+        printReceipt(slot - 1, item.getQuantity(), change);
+        displayItems();
+
+        return true;
+    }
+
+>>>>>>> Stashed changes
 
 
     /**
@@ -527,22 +760,31 @@ public class RegularVendingMachine {
      * updated.
      * @param newPrice The new price that you want to update for the item in the specified slot.
      */
+    /**
+     * The function updates the price of an item in a vending machine given the slot number and the new
+     * price.
+     *
+     * @param slot     The slot parameter represents the slot number of the item whose price needs to be
+     *                updated.
+     * @param newPrice The new price that you want to update for the item in the specified slot.
+     */
     public void updateItemPrice(int slot, double newPrice) {
         if (slot < 1 || slot > SLOT_COUNT) {
             System.out.println("Invalid slot number. Please try again.");
             return;
         }
 
-        if(newPrice < 0){
+        if (newPrice < 0) {
             System.out.println("Invalid input");
             return;
         }
 
         int index = slot - 1;
-        itemPrices.set(index, newPrice);
+        itemPropertiesMap.get(itemNames.get(index)).setPrice(newPrice);
 
         System.out.println("\u001B[33mItem price updated successfully!\u001B[0m");
     }
+
 
     /**
      * The function "resetItemQuantities" creates new ArrayLists to store the initial and sold
