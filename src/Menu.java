@@ -1,4 +1,5 @@
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -87,54 +88,55 @@ public class Menu {
      * special vending machine.
      */
     public void createVendingMachine() {
-        System.out.println("\u001B[36m===============================");
-        System.out.println("|    \u001B[34mR for Regular          \u001B[36m|");
-        System.out.println("|    \u001B[34mS for Special          \u001B[36m|");
-        System.out.println("===============================\u001B[0m");
-        System.out.println("\u001B[0mEnter your choice (R or S)");
-
-        System.out.print("\t\t\t=> ");
-        String machineType = scanner.next();
-        scanner.nextLine(); // Consume the newline character
-
-        while (!machineType.equalsIgnoreCase("R")) {
+        try {
             System.out.println("\u001B[36m===============================");
             System.out.println("|    \u001B[34mR for Regular          \u001B[36m|");
             System.out.println("|    \u001B[34mS for Special          \u001B[36m|");
             System.out.println("===============================\u001B[0m");
-            System.out.println("\u001B[31m No Vending Machine Created!");
             System.out.println("\u001B[0mEnter your choice (R or S)");
+
             System.out.print("\t\t\t=> ");
-            machineType = scanner.next();
+            String machineType = scanner.next();
             scanner.nextLine(); // Consume the newline character
+
+            while (!machineType.equalsIgnoreCase("R")) {
+                System.out.println("\u001B[36m===============================");
+                System.out.println("|    \u001B[34mR for Regular          \u001B[36m|");
+                System.out.println("|    \u001B[34mS for Special          \u001B[36m|");
+                System.out.println("===============================\u001B[0m");
+                System.out.println("\u001B[31m No Vending Machine Created!");
+                System.out.println("\u001B[0mEnter your choice (R or S)");
+                System.out.print("\t\t\t=> ");
+                machineType = scanner.next();
+                scanner.nextLine(); // Consume the newline character
+            }
+
+            vendingMachine = new RegularVendingMachine();
+            System.out.println();
+            System.out.println();
+            String createVMText =
+                    "\u001B[35m\t  ============================\n" +
+                            "\t  |                          |\n" +
+                            "\t  |  Regular Vending Machine |\n" +
+                            "\t  |       created.           |\n" +
+                            "\t  |                          |\n" +
+                            "\t  ============================\u001B[0m";
+
+            System.out.println(createVMText);
+            System.out.println();
+            System.out.println();
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred while creating the vending machine.");
+            e.printStackTrace();
         }
-
-
-        vendingMachine = new RegularVendingMachine();
-        System.out.println();
-        System.out.println();
-        String createVMText =
-                "\u001B[35m\t  ============================\n" +
-                        "\t  |                          |\n" +
-                        "\t  |  Regular Vending Machine |\n" +
-                        "\t  |       created.           |\n" +
-                        "\t  |                          |\n" +
-                        "\t  ============================\u001B[0m";
-
-        System.out.println(createVMText);
-        System.out.println();
-        System.out.println();
-
     }
+
 
     /**
      * The performMaintenance() function displays a maintenance menu and allows the user to perform
      * various maintenance tasks on a vending machine.
      */
     private void performMaintenance() {
-
-
-
         int option;
         do {
             System.out.println();
@@ -150,31 +152,37 @@ public class Menu {
             System.out.println("| 6. Go Back                 |");
             System.out.println("==============================");
             System.out.print("\u001B[92mEnter your choice (1-6): ");
-            option = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            try {
+                option = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
 
-            switch (option) {
-                case 1:
-                    maintenance.refillItem(vendingMachine);
-                    break;
-                case 2:
-                    maintenance.restockChange(vendingMachine);
-                    break;
-                case 3:
-                    maintenance.updatePrices(vendingMachine);
-                    break;
-                case 4:
-                    maintenance.dispenseTotalPayments(vendingMachine);
-                    break;
-                case 5:
-                    vendingMachine.printSummary();
-                    break;
-                case 6:
-                    System.out.println("Going back to the main menu...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
+                switch (option) {
+                    case 1:
+                        maintenance.refillItem(vendingMachine);
+                        break;
+                    case 2:
+                        maintenance.restockChange(vendingMachine);
+                        break;
+                    case 3:
+                        maintenance.updatePrices(vendingMachine);
+                        break;
+                    case 4:
+                        maintenance.dispenseTotalPayments(vendingMachine);
+                        break;
+                    case 5:
+                        vendingMachine.printSummary();
+                        break;
+                    case 6:
+                        System.out.println("Going back to the main menu...");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.nextLine(); // Clear the scanner buffer
+                option = 0; // Set option to 0 to prompt the user again
             }
         } while (option != 6);
     }
@@ -190,25 +198,32 @@ public class Menu {
         do {
             clearScreen();
             showColoredMenu();
-            choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
 
-            switch (choice) {
-                case 1:
-                    createVendingMachine();
-                    break;
-                case 2:
-                    testVendingMachineSubMenu();
-                    break;
-                case 3:
-                    System.out.println("Exiting...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
+                switch (choice) {
+                    case 1:
+                        createVendingMachine();
+                        break;
+                    case 2:
+                        testVendingMachineSubMenu();
+                        break;
+                    case 3:
+                        System.out.println("Exiting...");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.nextLine(); // Clear the scanner buffer
+                choice = 0; // Set choice to 0 to prompt the user again
             }
         } while (choice != 3);
     }
+
 
     /**
      * The function "testVendingMachineSubMenu" displays a menu for testing vending machine features and
@@ -224,28 +239,32 @@ public class Menu {
         do {
             clearScreen();
             showTestVendingMachineSubMenu();
-            option = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            try {
+                option = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
 
-
-            switch (option) {
-                case 1:
-                    testVendingFeatures();
-
-                    break;
-                case 2:
-                    performMaintenance();
-
-                    break;
-                case 3:
-                    System.out.println("Going back to the main menu...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
+                switch (option) {
+                    case 1:
+                        testVendingFeatures();
+                        break;
+                    case 2:
+                        performMaintenance();
+                        break;
+                    case 3:
+                        System.out.println("Going back to the main menu...");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid integer.");
+                scanner.nextLine(); // Clear the scanner buffer
+                option = 0; // Set option to 0 to prompt the user again
             }
         } while (option != 3);
     }
+
 
     /**
      * The clearScreen() function clears the console screen in Java.
@@ -262,34 +281,39 @@ public class Menu {
     private void testVendingFeatures() {
         vendingMachine.displayItems();
 
-        System.out.print("Enter the item number you want to purchase (1-" + vendingMachine.getSlotCount() + "): ");
-        int itemNumber = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        try {
+            System.out.print("Enter the item number you want to purchase (1-" + vendingMachine.getSlotCount() + "): ");
+            int itemNumber = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
 
-        if ((itemNumber < 1) || (itemNumber > 8)){
-            System.out.println("Item slot doesn't exist");
-            return;
-        }
+            if ((itemNumber < 1) || (itemNumber > 8)){
+                System.out.println("Item slot doesn't exist");
+                return;
+            }
 
-        vendingMachine.displayUpdatedDenominationQuantities();
-        System.out.print("Enter the payment denomination (1-9): ");
-        int paymentDenomination = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+            vendingMachine.displayUpdatedDenominationQuantities();
+            System.out.print("Enter the payment denomination (1-9): ");
+            int paymentDenomination = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
 
-        if ((paymentDenomination < 1) || (paymentDenomination > 9)){
-            System.out.println("Denomination doesn't exist");
-            return;
-        }
+            if ((paymentDenomination < 1) || (paymentDenomination > 9)){
+                System.out.println("Denomination doesn't exist");
+                return;
+            }
 
-        if (vendingMachine.processTransaction(itemNumber, paymentDenomination)) {
-            System.out.println();
-            System.out.println("Transaction completed successfully.");
-            System.out.println();
-        } else {
-            System.out.println();
-            System.out.println("Transaction failed.");
-            System.out.println();
+            if (vendingMachine.processTransaction(itemNumber, paymentDenomination)) {
+                System.out.println();
+                System.out.println("Transaction completed successfully.");
+                System.out.println();
+            } else {
+                System.out.println();
+                System.out.println("Transaction failed.");
+                System.out.println();
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a valid integer.");
         }
     }
+
 
 }
