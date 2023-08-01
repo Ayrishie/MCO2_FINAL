@@ -7,19 +7,30 @@ import java.util.Map;
 public class Item {
     private static final int SLOT_COUNT = 8;
     private static final int ITEM_CAPACITY = 10;
-    public static final List<String> itemNames;
+    private static final double DEFAULT_PRICE = 1.0; // Assuming a default price for all items
 
-    static {
-        // Initialize the itemNames list in the static block
-        itemNames = new ArrayList<>(Arrays.asList(
-                "Bread", "Pizza Sauce", "Cheese", "Meat toppings",
-                "Vegetable toppings", "Condiments", "Box", "Softdrink"
-        ));
-    }
+    // List to hold the names of all items
+    public static final List<String> itemNames = Arrays.asList(
+            "Bread", "Pizza Sauce", "Cheese", "Meat toppings",
+            "Vegetable toppings", "Condiments", "Box", "Softdrink"
+    );
 
     // Map to hold the properties for each item
-    private static final Map<String, Item> itemPropertiesMap = new HashMap<>();
+    protected static Map<String, Item> itemPropertiesMap = new HashMap<>();
 
+    // Initialize the itemPropertiesMap in the static block
+    static {
+        itemPropertiesMap.put("Bread", new Item("Bread", ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Pizza Sauce", new Item("Pizza Sauce", ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Cheese", new Item("Cheese", ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Meat toppings", new Item("Meat toppings", ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Vegetable toppings", new Item("Vegetable toppings", ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Condiments", new Item("Condiments", ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Box", new Item("Box", ITEM_CAPACITY, DEFAULT_PRICE, 0));
+        itemPropertiesMap.put("Softdrink", new Item("Softdrink", ITEM_CAPACITY, DEFAULT_PRICE, 0));
+    }
+
+    private String itemName;
     private int quantity;
     private double price;
     private int calories;
@@ -27,7 +38,8 @@ public class Item {
     private List<Integer> soldItemQuantities;
     private List<Integer> initialQuantities;
 
-    public Item() {
+    public Item(String itemName, int quantity, double price, int calories) {
+        this.itemName = itemName;
         this.quantity = quantity;
         this.price = price;
         this.calories = calories;
@@ -36,17 +48,22 @@ public class Item {
 
         for (int i = 0; i < SLOT_COUNT; i++) {
             soldItemQuantities.add(0);
-            initialQuantities.add(10); // Assuming the default capacity is 10 for all slots
+            initialQuantities.add(ITEM_CAPACITY);
         }
 
-        itemPropertiesMap.put(itemNames.get(quantity), this);
+        // Add the item to the itemPropertiesMap using the item's name as the key
+        itemPropertiesMap.put(itemName, this);
     }
 
+    // Getters and Setters for quantity, price, and calories
     public static List<String> getItemNames() {
         return itemNames;
     }
 
-    // Getters and Setters for quantity, price, and calories
+    public String getItemName() {
+        return itemName;
+    }
+
     public int getQuantity() {
         return quantity;
     }
@@ -80,4 +97,10 @@ public class Item {
     public static Item getItemProperties(String itemName) {
         return itemPropertiesMap.get(itemName);
     }
+
+    public List<Integer> getSoldItemQuantities() {
+        return new ArrayList<>(soldItemQuantities);
+    }
+
+
 }
