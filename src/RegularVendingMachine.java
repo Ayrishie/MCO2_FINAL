@@ -263,7 +263,7 @@ public class RegularVendingMachine {
      */
     private void printReceipt(int slot, int quantity, double change) {
         String itemName = itemNames.get(slot);
-        ItemProperties itemProperties = itemPropertiesMap.get(itemNames.get(slot - 1));
+        ItemProperties itemProperties = itemPropertiesMap.get(itemNames.get(slot));
 
         System.out.println("[DEBUG] itemNames contents: " + itemNames);
         System.out.println("[DEBUG] SLOT NUMBER " + slot);
@@ -361,42 +361,48 @@ public class RegularVendingMachine {
      * Gives change to the customer for the transaction.
      *
      * @param change the change amount to be given
+     * @return
      */
-    private void giveChange(double change) {
-        if (change == 0) {
-            return;
-        }
+    public boolean giveChange(double change) {
+        System.out.println("|============================================|");
+        System.out.println("|========= Available Bills For Change =======|");
+        System.out.println("|============================================|");
 
-        int remainingChange = (int) change;
+        int[] changeQuantities = new int[DENOMINATION_COUNT];
+        for (int i = DENOMINATION_COUNT - 1; i >= 0; i--) {
+            int denominationValue = denominationValues.get(i);
+            int billCount = (int) (change / denominationValue);
+            int availableBillCount = denominationQuantities.get(i);
 
-        // Create a copy of the denomination quantities to track the changes
-        List<Integer> updatedQuantities = new ArrayList<>(denominationQuantities);
+            if (billCount > availableBillCount) {
+                billCount = availableBillCount;
+            }
 
-        int[] denominations = {1000, 500, 200, 100, 50, 20, 10, 5, 1};
-        int amount = (int) change;
+            changeQuantities[i] = billCount;
+            change -= billCount * denominationValue;
 
-        for (int i = 0; i < denominations.length; i++) {
-            int denominationValue = denominations[i];
+            System.out.printf("| %2d.......$%-4d: %3d%28s |\n", i + 1, denominationValue, availableBillCount, "");
 
-            if (amount >= denominationValue) {
-                int denominationQuantity = updatedQuantities.get(i);
-                int numBillsToDispense = Math.min(amount / denominationValue, denominationQuantity);
-
-                remainingChange -= numBillsToDispense * denominationValue;
-                amount -= numBillsToDispense * denominationValue;
-                updatedQuantities.set(i, denominationQuantity - numBillsToDispense);
-                System.out.printf("$%d: %d%n", denominationValue, numBillsToDispense);
+            if (change <= 0) {
+                break;
             }
         }
+        System.out.println("|============================================|");
 
-        if (remainingChange == 0) {
-            // Update the original denomination quantities with the updated quantities
-            denominationQuantities = updatedQuantities;
-        } else {
-            System.out.println("Cannot give exact change. Transaction canceled.");
-            denominationQuantities = updatedQuantities;
+        if (change > 0) {
+            return false; // Change cannot be given exactly
         }
+
+        // Update the denominationQuantities only if the transaction is successful
+        for (int i = 0; i < DENOMINATION_COUNT; i++) {
+            int availableBillCount = denominationQuantities.get(i);
+            int usedBillCount = changeQuantities[i];
+            denominationQuantities.set(i, availableBillCount - usedBillCount);
+        }
+
+        return true;
     }
+
 
 
 
@@ -499,7 +505,11 @@ public class RegularVendingMachine {
 
         // Calculate change and give change
         double change = paymentAmount - price;
-        giveChange(change);
+
+        if (!giveChange(change)) {
+            return false;
+        }
+
 
         // Update item quantities and sales
         itemQuantities.set(slot, itemQuantities.get(slot) - 1);
