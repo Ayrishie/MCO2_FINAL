@@ -6,11 +6,12 @@ import java.util.Collections;
 /**
  * A class representing a regular vending machine.
  */
-public class RegularVendingMachine {
+public abstract class RegularVendingMachine {
     private static final int SLOT_COUNT = 8;
     private static final int ITEM_CAPACITY = 10;
     private static final int DENOMINATION_COUNT = 9;
     private static final double DEFAULT_PRICE = 0.0;
+<<<<<<< Updated upstream
     private List<Integer> denominationValues;
     private List<String> itemSlots;
     private List<Integer> itemQuantities;
@@ -24,6 +25,31 @@ public class RegularVendingMachine {
     private final Scanner scanner;
 
     private List<String> denominationNames;
+=======
+        public final ArrayList<Integer> itemCalories;
+        public List<String> itemNames;
+        public List<Integer> denominationValues;
+        public List<Integer> itemQuantities;
+        //public Map<String, ItemProperties> itemPropertiesMap; // Map to associate item names with their properties
+        public double totalSales;
+        public int transactionCount;
+        public List<Integer> initialItemQuantities;
+        public List<Integer> soldItemQuantities;
+        public final Scanner scanner;
+
+        public List<String> denominationNames;
+        public List<Item> items;
+        public boolean itemsInitialized = false;
+
+        public List<Integer> denominationQuantities;
+        public Item item;
+
+        private int quantity;
+    private int price;
+
+    private int calories;
+    private String itemName;
+>>>>>>> Stashed changes
 
     /**
      * Constructs a RegularVendingMachine object and initializes its fields.
@@ -568,4 +594,6 @@ public class RegularVendingMachine {
     public void resetTotalSales() {
         totalSales = 0.0;
     }
+
+
 }
