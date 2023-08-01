@@ -323,17 +323,15 @@ public class Menu {
         int itemNumber = scanner.nextInt();
         scanner.nextLine(); // Consume the newline character
 
-<<<<<<< Updated upstream
         if ((itemNumber < 1) || (itemNumber > 8)){
             System.out.println("Item slot doesn't exist");
             return;
         }
-=======
-            if ((itemNumber < 1) || (itemNumber > 8)) {
+if ((itemNumber < 1) || (itemNumber > 8)) {
                 System.out.println("Item slot doesn't exist");
                 return;
             }
->>>>>>> Stashed changes
+
 
         vendingMachine.displayUpdatedDenominationQuantities();
         System.out.print("Enter the payment denomination (1-9): ");
