@@ -1,4 +1,6 @@
 import java.util.*;
+import java.util.List; // Add this import statement
+import java.util.ArrayList; // Add this import statement
 
 /**
  * A class representing a regular vending machine.
@@ -30,36 +32,36 @@ public class RegularVendingMachine {
      * Constructs a RegularVendingMachine object and initializes its fields.
      */
     public RegularVendingMachine() {
-        scanner = new Scanner(System.in);
-        items = new ArrayList<>();
-        itemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
-        initialItemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
-        soldItemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
-        denominationQuantities = new ArrayList<>(Collections.nCopies(DENOMINATION_COUNT, 0));
-        denominationValues = Arrays.asList(1000, 500, 200, 100, 50, 25, 10, 5, 1);
-        itemCalories = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
+            scanner = new Scanner(System.in);
+            items = new ArrayList<>();
+            itemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
+            initialItemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, ITEM_CAPACITY));
+            soldItemQuantities = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
+            denominationQuantities = new ArrayList<>(Collections.nCopies(DENOMINATION_COUNT, 0));
+            denominationValues = Arrays.asList(1000, 500, 200, 100, 50, 25, 10, 5, 1);
+            itemCalories = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
 
-        // Create the item properties map and initialize with default values
-        itemPropertiesMap = new HashMap<>();
-        itemPropertiesMap.put("Bread", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
-        itemPropertiesMap.put("Pizza Sauce", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
-        itemPropertiesMap.put("Cheese", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
-        itemPropertiesMap.put("Meat toppings", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
-        itemPropertiesMap.put("Vegetable toppings", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
-        itemPropertiesMap.put("Condiments", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
-        itemPropertiesMap.put("Box", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
-        itemPropertiesMap.put("Softdrink", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+            // Create the item properties map and initialize with default values
+            itemPropertiesMap = new HashMap<>();
+            itemPropertiesMap.put("Bread", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+            itemPropertiesMap.put("Pizza Sauce", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+            itemPropertiesMap.put("Cheese", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+            itemPropertiesMap.put("Meat toppings", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+            itemPropertiesMap.put("Vegetable toppings", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+            itemPropertiesMap.put("Condiments", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+            itemPropertiesMap.put("Box", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
+            itemPropertiesMap.put("Softdrink", new ItemProperties(ITEM_CAPACITY, DEFAULT_PRICE, 0));
 
-        initializeItems();
+            initializeItems();
 
-        System.out.println("itemQuantities size: " + itemQuantities.size());
-        System.out.println("itemPrices size: " + itemPropertiesMap.size());
-        System.out.println("itemNames size: " + itemNames.size());
-        System.out.println("itemCalories size: " + itemCalories.size());
+            System.out.println("itemQuantities size: " + itemQuantities.size());
+            System.out.println("itemPrices size: " + itemPropertiesMap.size());
+            System.out.println("itemNames size: " + itemNames.size());
+            System.out.println("itemCalories size: " + itemCalories.size());
 
 
-        List<String> itemNames = Item.getItemNames();
-        setDenominationValues();
+            List<String> itemNames = Item.getItemNames();
+            setDenominationValues();
         setDenominationNames();
         setDenominationQuantities();
     }
@@ -93,6 +95,10 @@ public class RegularVendingMachine {
         public void setCalories(int calories) {
             this.calories = calories;
         }
+
+        public int getQuantity() {
+            return quantity;
+        }
     }
 
 
@@ -100,6 +106,9 @@ public class RegularVendingMachine {
     private void initializeItems() {
         itemNames = Arrays.asList("Bread", "Pizza Sauce", "Cheese", "Meat toppings", "Vegetable toppings", "Condiments", "Box", "Softdrink");
         List<Integer> itemCalories = new ArrayList<>(Collections.nCopies(SLOT_COUNT, 0));
+
+        // Create a new itemPropertiesMap to hold the item properties
+        Map<String, ItemProperties> newItemPropertiesMap = new HashMap<>();
 
         // Set the item prices
         System.out.println("Set Item Prices:");
@@ -111,8 +120,10 @@ public class RegularVendingMachine {
                 continue;
             }
 
-            ItemProperties itemProperties = itemPropertiesMap.get(itemName);
-            itemProperties.setPrice(price);
+            // Create a new ItemProperties object with the price
+            ItemProperties itemProperties = new ItemProperties(ITEM_CAPACITY, price, 0);
+            // Add the item properties to the new map
+            newItemPropertiesMap.put(itemName, itemProperties);
         }
 
         // Set the item calories
@@ -125,10 +136,16 @@ public class RegularVendingMachine {
                 continue;
             }
 
-            ItemProperties itemProperties = itemPropertiesMap.get(itemName);
+            // Get the existing item properties from the new map
+            ItemProperties itemProperties = newItemPropertiesMap.get(itemName);
+            // Update the calories in the item properties
             itemProperties.setCalories(calories);
         }
+
+        // Replace the existing itemPropertiesMap with the updated one
+        itemPropertiesMap = newItemPropertiesMap;
     }
+
 
 
 
@@ -209,9 +226,12 @@ public class RegularVendingMachine {
      * Displays the items in the vending machine.
      */
 
+    /**
+     * Displays the items in the vending machine.
+     */
     public void displayItems() {
         // Print debug information
-        System.out.println("Number of items: " + items.size());
+        System.out.println("Number of items: " + itemNames.size());
 
         System.out.println();
         System.out.println();
@@ -222,19 +242,20 @@ public class RegularVendingMachine {
         System.out.println("\u001B[36m======================================================");
         System.out.printf("\u001B[36m| \u001B[33m%2s. %-20s%-8s%10s  %s%n", "No", "Item", "Quantity", "Price", "Calories   \u001B[36m|");
 
-        for (Item item : items) {
-            for (int i = 0; i < SLOT_COUNT; i++) { // use getSlotCount() instead of directly accessing SLOT_COUNT
-                String itemName = Item.getItemNames().get(i); // Get the item name from itemNames list
-                Item.ItemProperties itemProperties = Item.getItemProperties(itemName); // Get the ItemProperties for this item
-                int quantity = item.getQuantity();
-                double price = item.getPrice();
-                int calories = itemProperties.getCalories(); // Fetch the calories from the ItemProperties
+        for (int i = 0; i < itemNames.size(); i++) {
+            String itemName = itemNames.get(i);
+            ItemProperties itemProperties = itemPropertiesMap.get(itemName);
+            int quantity = itemProperties.getQuantity();
+            double price = itemProperties.getPrice();
+            int calories = itemProperties.getCalories();
 
-                System.out.printf("\u001B[36m| \u001B[33m%2d. %-20s%8d%13s  %5d  \u001B[36m |%n\u001B[0m", i + 1, itemName, quantity, "$" + price, calories);
-            }
+            System.out.printf("\u001B[36m| \u001B[33m%2d. %-20s%8d%13s  %5d  \u001B[36m |%n\u001B[0m", i + 1, itemName, quantity, "$" + price, calories);
         }
         System.out.println("\u001B[36m|======================================================|");
     }
+
+
+
 
 
 
@@ -264,30 +285,26 @@ public class RegularVendingMachine {
      * @param change   the change amount given to the customer
      */
     private void printReceipt(int slot, int quantity, double change) {
-
-
         String itemName = itemNames.get(slot);
-        ItemProperties itemProperties = itemPropertiesMap.get(itemName);
+        ItemProperties itemProperties = itemPropertiesMap.get(itemNames.get(slot - 1));
 
-        System.out.println("[DEBUG] itemNames contents: " + Item.getItemNames());
+        System.out.println("[DEBUG] itemNames contents: " + itemNames);
         System.out.println("[DEBUG] SLOT NUMBER " + slot);
 
         System.out.println("[DEBUG] printReceipt() called with slot: " + slot + ", quantity: " + quantity + ", and change: " + change);
 
-        if (slot < 1 || slot > SLOT_COUNT) {
+        if (slot < 0 || slot >= SLOT_COUNT) {
             System.out.println("[DEBUG] Invalid slot number: " + slot);
             System.out.println("[DEBUG] Quantity: " + quantity);
             return;
         }
 
-        if (Item.getItemNames().isEmpty()) {
+        if (itemNames.isEmpty()) {
             System.out.println("[DEBUG] Error: itemNames list is empty.");
             return;
         }
 
-
         System.out.println("[DEBUG] SA WAKAS.");
-
         String ANSI_RESET = "\u001B[0m";
         String ANSI_RED = "\u001B[31m";
         String ANSI_YELLOW = "\u001B[33m";
@@ -309,7 +326,14 @@ public class RegularVendingMachine {
             System.out.printf("| Change: $%.2f              %n", change);
         }
 
+        // Display item properties from itemProperties object
         System.out.println("|============================================|");
+        System.out.println("| Item Properties:                           |");
+        System.out.println("|============================================|");
+        System.out.printf("| Price: $%.2f             %n", itemProperties.getPrice());
+        System.out.println("| Calories: " + itemProperties.getCalories());
+        System.out.println("|============================================|");
+
         System.out.println("|--------------------------------------------|");
         System.out.println("|============================================|");
         System.out.println("|     Updated Denomination Quantities        |");
@@ -325,32 +349,32 @@ public class RegularVendingMachine {
     }
 
 
-    /**
-     * The printSummary() function prints a summary of item quantities and sales transactions.
-     */
     public void printSummary() {
         System.out.println();
         System.out.println("\u001B[93m====================================");
         System.out.println("|           Item Summary           |");
         System.out.println("====================================");
 
-        for (Item item : items) {
-            for (int i = 0; i < SLOT_COUNT; i++) {
-                Object itemName = Item.getItemNames().get(i);
-                int initialQuantity = item.getInitialQuantities().get(i);
-                int soldQuantity = soldItemQuantities.get(i);
+        for (int slot = 0; slot < SLOT_COUNT; slot++) {
+            String itemName = itemNames.get(slot);
+            ItemProperties itemProperties = itemPropertiesMap.get(itemName);
 
-                System.out.println("\u001B[97m| Item: \u001B[92m" + itemName);
-                System.out.println("\u001B[97m| Before Quantity: \u001B[92m" + initialQuantity);
-                System.out.println("\u001B[97m| After Quantity: \u001B[92m" + (initialQuantity - soldQuantity));
-                System.out.println("\u001B[97m|----------------------------------");
-            }
+            int initialQuantity = item.getInitialQuantities().get(slot);
+            int soldQuantity = soldItemQuantities.get(slot);
+
+            System.out.println("\u001B[97m| Item: \u001B[92m" + itemName);
+            System.out.println("\u001B[97m| Before Quantity: \u001B[92m" + initialQuantity);
+            System.out.println("\u001B[97m| After Quantity: \u001B[92m" + (initialQuantity - soldQuantity));
+            System.out.println("\u001B[97m| Price: \u001B[92m$" + itemProperties.getPrice());
+            System.out.println("\u001B[97m| Calories: \u001B[92m" + itemProperties.getCalories());
+            System.out.println("\u001B[97m|----------------------------------");
         }
         System.out.println("\u001B[97m| Number of transactions: \u001B[92m" + transactionCount);
         System.out.println("\u001B[97m| Total sales: \u001B[92m" + totalSales);
         System.out.println("\u001B[93m|----------------------------------\u001B[0m");
         System.out.println();
     }
+
 
 
     /**
@@ -426,15 +450,17 @@ public class RegularVendingMachine {
      * @return The method is returning a boolean value.
      */
     public boolean processTransaction(int slot, int paymentDenomination) throws IllegalArgumentException {
-        // Adjust the index to match the list (0-based index)
-        Item item = items.get(slot - 1);
-
         // Get item properties from the itemPropertiesMap
-        String itemName = itemNames.get(slot - 1);
+        slot -= 1; // Subtract 1 from the slot to convert to 0-based index
+        String itemName = itemNames.get(slot);
         ItemProperties itemProperties = itemPropertiesMap.get(itemName);
 
+        System.out.println("[DEBUG] Selected Slot: " + slot);
+        System.out.println("[DEBUG] Selected Item Name: " + itemName);
+        System.out.println("[DEBUG] Item Properties: " + itemProperties);
+
         // Check if the item is available
-        int quantity = item.getQuantity();
+        int quantity = itemQuantities.get(slot);
         if (quantity <= 0) {
             System.out.println("Item out of stock.");
             return false;
@@ -448,6 +474,8 @@ public class RegularVendingMachine {
 
         // Calculate payment amount based on the payment denomination
         double paymentAmount = denominationValues.get(paymentDenomination - 1);
+
+        System.out.println("[DEBUG] Payment Amount: $" + paymentAmount);
 
         // Check if payment amount is sufficient
         double price = itemProperties.getPrice();
@@ -463,6 +491,8 @@ public class RegularVendingMachine {
             double additionalPaymentAmount = denominationValues.get(additionalPaymentDenomination - 1);
             paymentAmount += additionalPaymentAmount;
 
+            System.out.println("[DEBUG] Updated Payment Amount: $" + paymentAmount);
+
             if (paymentAmount < price) {
                 System.out.println("Still insufficient payment. Transaction canceled.");
                 return false;
@@ -474,16 +504,17 @@ public class RegularVendingMachine {
         giveChange(change);
 
         // Update item quantities and sales
-        item.setQuantity(item.getQuantity() - 1);
+        itemQuantities.set(slot, itemQuantities.get(slot) - 1);
         transactionCount++;
         totalSales += price;
 
         // Print receipt and display updated item quantities
-        printReceipt(slot - 1, item.getQuantity(), change);
+        printReceipt(slot, itemQuantities.get(slot), change);
         displayItems();
 
         return true;
     }
+
 
 
 

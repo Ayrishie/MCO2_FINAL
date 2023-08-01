@@ -281,7 +281,7 @@ public class Menu {
             return;
         }
 
-        if (vendingMachine.processTransaction(itemNumber - 1, paymentDenomination)) {
+        if (vendingMachine.processTransaction(itemNumber, paymentDenomination)) {
             System.out.println();
             System.out.println("Transaction completed successfully.");
             System.out.println();
