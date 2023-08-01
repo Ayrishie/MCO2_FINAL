@@ -229,30 +229,7 @@ public class RegularVendingMachine {
     /**
      * Displays the items in the vending machine.
      */
-    public void displayItems() {
-        // Print debug information
-        System.out.println("Number of items: " + itemNames.size());
 
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println("\u001B[36m======================================================");
-        System.out.println("\u001B[36m|             Vending Machine Items                  |");
-        System.out.println("\u001B[36m======================================================");
-        System.out.printf("\u001B[36m| \u001B[33m%2s. %-20s%-8s%10s  %s%n", "No", "Item", "Quantity", "Price", "Calories   \u001B[36m|");
-
-        for (int i = 0; i < itemNames.size(); i++) {
-            String itemName = itemNames.get(i);
-            ItemProperties itemProperties = itemPropertiesMap.get(itemName);
-            int quantity = itemProperties.getQuantity();
-            double price = itemProperties.getPrice();
-            int calories = itemProperties.getCalories();
-
-            System.out.printf("\u001B[36m| \u001B[33m%2d. %-20s%8d%13s  %5d  \u001B[36m |%n\u001B[0m", i + 1, itemName, quantity, "$" + price, calories);
-        }
-        System.out.println("\u001B[36m|======================================================|");
-    }
 
 
 
@@ -326,13 +303,6 @@ public class RegularVendingMachine {
             System.out.printf("| Change: $%.2f              %n", change);
         }
 
-        // Display item properties from itemProperties object
-        System.out.println("|============================================|");
-        System.out.println("| Item Properties:                           |");
-        System.out.println("|============================================|");
-        System.out.printf("| Price: $%.2f             %n", itemProperties.getPrice());
-        System.out.println("| Calories: " + itemProperties.getCalories());
-        System.out.println("|============================================|");
 
         System.out.println("|--------------------------------------------|");
         System.out.println("|============================================|");
@@ -432,6 +402,31 @@ public class RegularVendingMachine {
 
 
 
+    public void displayItems() {
+        // Print debug information
+        System.out.println("Number of items: " + itemNames.size());
+
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println("\u001B[36m======================================================");
+        System.out.println("\u001B[36m|             Vending Machine Items                  |");
+        System.out.println("\u001B[36m======================================================");
+        System.out.printf("\u001B[36m| \u001B[33m%2s. %-20s%-8s%10s  %s%n", "No", "Item", "Quantity", "Price", "Calories   \u001B[36m|");
+
+        for (int i = 0; i < itemNames.size(); i++) {
+            String itemName = itemNames.get(i);
+            ItemProperties itemProperties = itemPropertiesMap.get(itemName);
+            int quantity = itemQuantities.get(i); // Use itemQuantities list to get the updated quantity
+            double price = itemProperties.getPrice();
+            int calories = itemProperties.getCalories();
+
+            System.out.printf("\u001B[36m| \u001B[33m%2d. %-20s%8d%13s  %5d  \u001B[36m |%n\u001B[0m", i + 1, itemName, quantity, "$" + price, calories);
+        }
+        System.out.println("\u001B[36m|======================================================|");
+    }
+
 
 
 
@@ -471,14 +466,17 @@ public class RegularVendingMachine {
             System.out.println("Invalid payment denomination.");
             return false;
         }
+        // Check if payment amount is sufficient
+        double price = itemProperties.getPrice();
+
 
         // Calculate payment amount based on the payment denomination
         double paymentAmount = denominationValues.get(paymentDenomination - 1);
 
+
         System.out.println("[DEBUG] Payment Amount: $" + paymentAmount);
 
-        // Check if payment amount is sufficient
-        double price = itemProperties.getPrice();
+
         if (paymentAmount < price) {
             System.out.println("Insufficient payment. Please add more to the payment or enter 0 to cancel.");
             int additionalPaymentDenomination = scanner.nextInt();
@@ -507,7 +505,7 @@ public class RegularVendingMachine {
         itemQuantities.set(slot, itemQuantities.get(slot) - 1);
         transactionCount++;
         totalSales += price;
-
+        soldItemQuantities.set(slot, soldItemQuantities.get(slot) + 1); // Increment sold quantity
         // Print receipt and display updated item quantities
         printReceipt(slot, itemQuantities.get(slot), change);
         displayItems();
