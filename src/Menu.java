@@ -103,7 +103,7 @@ public class Menu {
 
             try {
                 if (machineType.equalsIgnoreCase("R")) {
-                    rVendingMachine = new RegularVendingMachine();
+                    this.rVendingMachine = new RegularVendingMachine();
                     System.out.println();
                     System.out.println();
                     String createVMText =
@@ -294,13 +294,20 @@ public class Menu {
 
         System.out.print("Enter the item number you want to purchase (1-" + rVendingMachine.getSlotCount() + "): ");
         int itemNumber;
-        if (scanner.hasNextInt()) {
-            itemNumber = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
-        } else {
+        try {
+            if (scanner.hasNextInt()) {
+                itemNumber = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+            } else {
+                System.out.println("Invalid input. Please enter a valid item number.");
+                return;
+            }
+        } catch (InputMismatchException e) {
             System.out.println("Invalid input. Please enter a valid item number.");
+            scanner.nextLine(); // Consume the invalid input
             return;
         }
+
         // Adjust the itemNumber value to match zero-based indexing
         int slotNumber = itemNumber;
 
@@ -345,7 +352,6 @@ public class Menu {
 
 
     private void testSpecialVendingFeatures() {
-
         try {  // Special Vending Machine
             double itemPrice;
             int itemCalories;
@@ -358,14 +364,43 @@ public class Menu {
             List<Double> chosenItemPrices = new ArrayList<>();
             List<Integer> chosenItemCalories = new ArrayList<>();
 
-
             while (continueSelecting) {
                 sVendingMachine.displayItems();
-                System.out.print("Enter the item number you want to purchase (1-" + sVendingMachine.getSlotCount() + "): ");
-                itemNumber = scanner.nextInt();
-                scanner.nextLine(); // Consume the newline character
+                System.out.print("Enter the item number you want to purchase (1-" + sVendingMachine.getSlotCount() + ") or -1 to cancel: ");
+                try {
+                    itemNumber = scanner.nextInt();
+                    scanner.nextLine(); // Consume the newline character
 
-                if ((itemNumber < 1) || (itemNumber > sVendingMachine.getSlotCount())) {
+                    if (itemNumber == -1) {
+                        System.out.println("Transaction canceled. Returning to the main menu.");
+                        // Revert any changes made to the item quantities and sold item quantities
+                        for (int i = 0; i < selectedSlotNumbers.size(); i++) {
+                            int slot = selectedSlotNumbers.get(i);
+                            int qty = quantities.get(i);
+                            Item selectedItem = Item.getItemProperties(Item.getItemNames().get(slot - 1));
+                            selectedItem.setQuantity(selectedItem.getQuantity() + qty);
+                            selectedItem.getSoldItemQuantities().set(slot - 1, selectedItem.getSoldItemQuantities().get(slot - 1) - qty);
+                        }
+                        return;
+                    }
+
+                    if (itemNumber <= 0) {
+                        System.out.println("Invalid quantity. Please enter a positive value.");
+                        continue; // Ask for the quantity again
+                    } else if (quantity > 10) {
+                        System.out.println("Maximum quantity allowed is 10. Please enter a valid quantity.");
+                        continue; // Ask for the quantity again
+                    }
+
+                } catch (InputMismatchException e) {
+                    System.out.println("Invalid input. Please enter a valid quantity.");
+                    scanner.nextLine(); // Consume the invalid input
+                    return;
+                }
+                // Adjust the itemNumber value to match zero-based indexing
+                int slotNumber = itemNumber - 1;
+
+                if ((slotNumber < 0) || (slotNumber >= sVendingMachine.getSlotCount())) {
                     System.out.println("Item slot doesn't exist");
                     continue; // Ask for the item number again
                 }
@@ -373,7 +408,18 @@ public class Menu {
                 System.out.print("Enter the quantity you want to purchase for item " + itemNumber + ": ");
                 quantity = scanner.nextInt();
                 scanner.nextLine(); // Consume the newline character
-
+                if (quantity == -1) {
+                    System.out.println("Transaction canceled. Returning to the main menu.");
+                    // Revert any changes made to the item quantities and sold item quantities
+                    for (int i = 0; i < selectedSlotNumbers.size(); i++) {
+                        int slot = selectedSlotNumbers.get(i);
+                        int qty = quantities.get(i);
+                        Item selectedItem = Item.getItemProperties(Item.getItemNames().get(slot - 1));
+                        selectedItem.setQuantity(selectedItem.getQuantity() + qty);
+                        selectedItem.getSoldItemQuantities().set(slot - 1, selectedItem.getSoldItemQuantities().get(slot - 1) - qty);
+                    }
+                    return;
+                }
                 if (quantity <= 0) {
                     System.out.println("Invalid quantity. Please enter a positive value.");
                     continue; // Ask for the quantity again
@@ -383,7 +429,7 @@ public class Menu {
                 }
 
 
-                String itemName = Item.getItemNames().get(itemNumber - 1);
+                String itemName = Item.getItemNames().get(slotNumber);
                 Item item = Item.getItemProperties(itemName);
                 itemPrice = item.getPrice();
                 itemCalories = item.getCalories();
@@ -391,26 +437,35 @@ public class Menu {
                 double totalPrice = itemPrice * quantity;
                 int totalCalories = itemCalories * quantity;
 
-                System.out.println("Total Price for " + quantity + " items: " + totalPrice);
-                System.out.println("Total Calories for " + quantity + " items: " + totalCalories);
-
+                int updatedQuantity = item.getQuantity() - quantity;
+                if (updatedQuantity < 0) {
+                    System.out.println("Not enough quantity available for item " + itemNumber);
+                    continue; // Ask for the item number again
+                }
                 // Add the selected item and its details to the lists
                 selectedSlotNumbers.add(itemNumber);
                 quantities.add(quantity);
                 chosenItemPrices.add(totalPrice);
                 chosenItemCalories.add(totalCalories);
 
+
+
+                System.out.println("Total Price for " + quantity + " items: " + totalPrice);
+                System.out.println("Total Calories for " + quantity + " items: " + totalCalories);
+
+                item.setQuantity(updatedQuantity);
+                item.getSoldItemQuantities().set(slotNumber, item.getSoldItemQuantities().get(slotNumber) + quantity);
+
                 System.out.print("Do you want to purchase another item? (Y/N): ");
                 String choice = scanner.nextLine().trim().toUpperCase();
-                if (choice.equals("N")) {
-                    continueSelecting = false;
-
-                } else {
-                    // Clear the lists for the next purchase
-                    selectedSlotNumbers.clear();
-                    quantities.clear();
-                    chosenItemPrices.clear();
-                    chosenItemCalories.clear();
+                try {
+                    if (choice.equals("N")) {
+                        continueSelecting = false;
+                    } else if (!choice.equals("Y")) {
+                        throw new IllegalArgumentException("Invalid input. Please enter Y or N.");
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Error: " + e.getMessage());
                 }
             }
 
@@ -421,13 +476,14 @@ public class Menu {
 
 
             // Calculate the total price of all selected items
+            // Calculate the total price of all selected items
             double totalCost = 0;
             for (double price : chosenItemPrices) {
                 totalCost += price;
             }
 
             // Display the selected items and their respective prices and calories
-
+            System.out.println();
             System.out.println("Selected Items and Their Details:");
             for (int i = 0; i < selectedSlotNumbers.size(); i++) {
                 itemNumber = selectedSlotNumbers.get(i) - 1; // Adjust itemNumber to 0-indexed
@@ -436,7 +492,6 @@ public class Menu {
                 itemCalories = chosenItemCalories.get(i);
                 System.out.println(item.getItemName() + " - Price: " + itemPrice + " - Calories: " + itemCalories);
             }
-
 
             // Display the total price
             System.out.println("Total Price of the Selected Items: " + totalCost);
@@ -452,15 +507,40 @@ public class Menu {
             }
 
 
+
             // Prompt for quantity of selected denomination
             System.out.print("Enter the quantity for denomination " + paymentDenomination + ": ");
             int paymentQuantity = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
 
+            if (paymentQuantity == -1) {
+                System.out.println("Transaction canceled. Returning to the main menu.");
+                // Revert any changes made to the item quantities and sold item quantities
+                for (int i = 0; i < selectedSlotNumbers.size(); i++) {
+                    int slot = selectedSlotNumbers.get(i);
+                    int qty = quantities.get(i);
+                    Item selectedItem = Item.getItemProperties(Item.getItemNames().get(slot - 1));
+                    selectedItem.setQuantity(selectedItem.getQuantity() + qty);
+                    selectedItem.getSoldItemQuantities().set(slot - 1, selectedItem.getSoldItemQuantities().get(slot - 1) - qty);
+                }
+                return;
+            }
+
+
+
+
             // Process the transaction with the given selectedSlotNumbers, quantities, paymentDenomination, and paymentQuantity
-            // Process the transaction with the given slot, itemNumber, quantity, and paymentDenomination
             if (sVendingMachine.processTransaction(selectedSlotNumbers, quantities, paymentDenomination, paymentQuantity)) {
                 System.out.println("Transaction completed successfully.");
+
+                // Update the item quantities after successful transaction
+                for (int i = 0; i < selectedSlotNumbers.size(); i++) {
+                    int slot = selectedSlotNumbers.get(i);
+                    int qty = quantities.get(i);
+                    Item selectedItem = Item.getItemProperties(Item.getItemNames().get(slot - 1));
+                    selectedItem.decrementQuantity(qty);
+                    selectedItem.getSoldItemQuantities().set(slot - 1, selectedItem.getSoldItemQuantities().get(slot - 1) + qty);
+                }
             } else {
                 System.out.println("Transaction failed.");
             }

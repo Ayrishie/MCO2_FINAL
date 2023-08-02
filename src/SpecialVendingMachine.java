@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +19,10 @@ public class SpecialVendingMachine extends RegularVendingMachine {
 
     }
 
-
     public boolean processTransaction(List<Integer> slots, List<Integer> quantities, int paymentDenomination, int paymentQuantity) {
         double totalCost = 0;
+
+        List<Item> purchasedItems = new ArrayList<>();
 
         for (int i = 0; i < slots.size(); i++) {
             int slot = slots.get(i);
@@ -37,16 +39,18 @@ public class SpecialVendingMachine extends RegularVendingMachine {
             int availableQuantity = initialQuantity - soldQuantity;
 
             if (availableQuantity <= 0) {
-                System.out.println("Item out of stock: " + itemName);
-                return false;
-            } else if (quantity <= 0 || quantity > availableQuantity) {
                 System.out.println("Invalid quantity for item: " + itemName);
+                return false;
+            } else if (quantity <= 0 || quantity > availableQuantity)  {
+                System.out.println("Not enough stock for item: " + itemName + ". Available quantity: " + availableQuantity);
                 return false;
             }
 
-            // Calculate the total cost of the selected items
+                  // Calculate the total cost of the selected items
             double pricePerItem = item.getPrice();
             totalCost += pricePerItem * quantity;
+            // Add the purchased item to the list
+            purchasedItems.add(new Item(itemName, quantity, pricePerItem, item.getCalories()));
         }
 
         // Check the payment denomination
@@ -74,14 +78,19 @@ public class SpecialVendingMachine extends RegularVendingMachine {
 
             transactionCount++;
             totalSales += totalCost;
+
             // Update the item quantities
-            int soldQuantity = item.getSoldItemQuantities().get(slot - 1);
+            int soldQuantity = item.getSoldItemQuantities().get(slot - 1) - quantity;
             int updatedQuantity = item.getQuantity() - quantity;
+
+            System.out.println(updatedQuantity + "updatedQuantity ");
+            System.out.println(soldQuantity + "soldQuantity");
+
             item.setQuantity(updatedQuantity);
             item.getSoldItemQuantities().set(slot - 1, soldQuantity + quantity);
 
             // Print receipt and display updated item quantities
-            printReceipt(slot, quantity, paymentAmount - totalCost);
+            printMultipleReceipts(purchasedItems, quantity, paymentAmount - totalCost);
         }
 
         displayItems();
@@ -89,9 +98,56 @@ public class SpecialVendingMachine extends RegularVendingMachine {
         return true;
     }
 
+    private void printMultipleReceipts(List<Item> purchasedItems, double totalCost, double change) {
+        try {
+            System.out.println("\n==============================================");
+            System.out.println("|           RAIO  Vending Machine            |");
+            System.out.println("|============================================|");
 
+            for (Item purchasedItem : purchasedItems) {
+                int slot = Item.getItemNames().indexOf(purchasedItem.getItemName());
+                int quantity = purchasedItem.getQuantity();
+                double itemPrice = purchasedItem.getPrice();
+                int itemCalories = purchasedItem.getCalories();
 
+                System.out.println("| Item purchased: " + purchasedItem.getItemName());
+                System.out.println("| Quantity: " + quantity);
+                System.out.println("| Price per item: $" + itemPrice);
+                System.out.println("| Total cost for this item: $" + (itemPrice * quantity));
+                System.out.println("| Calories per item: " + itemCalories);
+                System.out.println("|--------------------------------------------|");
+            }
+
+            System.out.printf("| Total Sales: $%.2f             %n", totalSales);
+            System.out.printf("| Total Transactions: %d                %n", transactionCount);
+
+            if (change >= 0) {
+                System.out.printf("| Change: $%.2f              %n", change);
+            }
+
+            System.out.println("|--------------------------------------------|");
+            System.out.println("|============================================|");
+            System.out.println("|     Updated Denomination Quantities        |");
+            System.out.println("|============================================|");
+
+            for (int i = 0; i < denominationQuantities.size(); i++) {
+                int denominationValue = denominationValues.get(i);
+                int denominationQuantity = denominationQuantities.get(i);
+                System.out.println("| " + denominationValue + ":\t" + denominationQuantity);
+            }
+
+            System.out.println("============================================");
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Index out of bounds. Please enter a valid slot number.");
+        } catch (NullPointerException e) {
+            System.out.println("Error: Null pointer. Please ensure the itemNames list is not empty.");
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
+    }
 }
+
+
 
 /**
 

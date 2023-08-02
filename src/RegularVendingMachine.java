@@ -25,7 +25,7 @@ public class RegularVendingMachine {
     protected List<Item> items;
     private boolean itemsInitialized = false;
 
-    private List<Integer> denominationQuantities;
+    protected List<Integer> denominationQuantities;
     Item item;
     private int quantity;
     private int price;

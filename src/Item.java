@@ -102,5 +102,10 @@ public class Item {
         return new ArrayList<>(soldItemQuantities);
     }
 
+    public void decrementQuantity(int quantity) {
+        this.quantity -= quantity;
+    }
+
+
 
 }
