@@ -11,7 +11,7 @@ public class RegularVendingMachine {
     protected static final int DENOMINATION_COUNT = 9;
     protected static final double DEFAULT_PRICE = 0.0;
     private final ArrayList<Integer> itemCalories;
-    private List<String> itemNames;
+    public List<String> itemNames;
     protected List<Integer> denominationValues;
     protected List<Integer> itemQuantities;
     //private Map<String, ItemProperties> itemPropertiesMap; // Map to associate item names with their properties

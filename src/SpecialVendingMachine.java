@@ -9,6 +9,7 @@ import java.util.Map;
 public class SpecialVendingMachine extends RegularVendingMachine {
 
     private Map<String, String> itemPromotions;
+    private int soldQuantity;
 
 
     /**
@@ -21,13 +22,13 @@ public class SpecialVendingMachine extends RegularVendingMachine {
     }
 
     public boolean processTransaction(List<Integer> slots, List<Integer> quantities, int paymentDenomination, int paymentQuantity) {
-
+        double totalCost = 0;
+        List<Item> purchasedItems = new ArrayList<>();
 
         System.out.println("\n===== DEBUG: Vending Machine Items =====");
         System.out.println("| No. | Item              | Quantity | Price | Calories |");
         System.out.println("|-----|-------------------|----------|-------|----------|");
 
-        List<String> itemNames = Item.getItemNames();
         for (int i = 0; i < itemNames.size(); i++) {
             String itemName = itemNames.get(i);
             Item item = Item.getItemProperties(itemName);
@@ -41,8 +42,6 @@ public class SpecialVendingMachine extends RegularVendingMachine {
         }
         System.out.println("=======================================");
 
-        double totalCost = 0;
-        List<Item> purchasedItems = new ArrayList<>();
 
         for (int i = 0; i < slots.size(); i++) {
             int slot = slots.get(i);
@@ -119,9 +118,24 @@ public class SpecialVendingMachine extends RegularVendingMachine {
             item.getSoldItemQuantities().set(slot - 1, soldQuantity);
         }
 
+        System.out.println("\n===== DEBUG: Vending Machine Items =====");
+        System.out.println("| No. | Item              | Quantity | Price | Calories |");
+        System.out.println("|-----|-------------------|----------|-------|----------|");
 
+        for (int i = 0; i < itemNames.size(); i++) {
+            String itemName = itemNames.get(i);
+            Item item = Item.getItemProperties(itemName);
+
+            int slot = i + 1;
+            int quantity = item.getQuantity();
+            double price = item.getPrice();
+            int calories = item.getCalories();
+
+            System.out.printf("| %3d | %-17s | %8d | %5.2f | %8d |%n", slot, itemName, quantity, price, calories);
+        }
+        System.out.println("=======================================");
         // Print receipt and display updated item quantities
-        printMultipleReceipts(purchasedItems, totalSales, transactionCount, paymentAmount - totalCost);
+        printMultipleReceipts(purchasedItems, totalSales, transactionCount, paymentAmount - totalCost, soldQuantity);
 
         displayItems();
 
@@ -130,15 +144,15 @@ public class SpecialVendingMachine extends RegularVendingMachine {
 
 
 
-    private void printMultipleReceipts(List<Item> purchasedItems,  double totalSales, int transactionCount, double change) {
+    private void printMultipleReceipts(List<Item> purchasedItems,  double totalSales, int transactionCount, double change, int quantity) {
         try {
             System.out.println("\n==============================================");
             System.out.println("|           RAIO  Vending Machine            |");
             System.out.println("|============================================|");
+            System.out.println(quantity + "quantity inside the printmultipleRciepts");
 
             for (Item purchasedItem : purchasedItems) {
-                int slot = Item.getItemNames().indexOf(purchasedItem.getItemName());
-                int quantity = purchasedItem.getQuantity();
+
                 double itemPrice = purchasedItem.getPrice();
                 int itemCalories = purchasedItem.getCalories();
 

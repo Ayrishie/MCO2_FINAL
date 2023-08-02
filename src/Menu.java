@@ -355,7 +355,6 @@ public class Menu {
         try {  // Special Vending Machine
             double itemPrice;
             int itemCalories;
-            boolean continueSelecting = true;
             int quantity = 0;
             int itemNumber;
 
@@ -364,7 +363,7 @@ public class Menu {
             List<Double> chosenItemPrices = new ArrayList<>();
             List<Integer> chosenItemCalories = new ArrayList<>();
 
-            while (continueSelecting) {
+            while (true) {
                 sVendingMachine.displayItems();
                 System.out.print("Enter the item number you want to purchase (1-" + sVendingMachine.getSlotCount() + ") or -1 to cancel: ");
                 try {
@@ -460,7 +459,7 @@ public class Menu {
                 String choice = scanner.nextLine().trim().toUpperCase();
                 try {
                     if (choice.equals("N")) {
-                        continueSelecting = false;
+                        break;
                     } else if (!choice.equals("Y")) {
                         throw new IllegalArgumentException("Invalid input. Please enter Y or N.");
                     }
