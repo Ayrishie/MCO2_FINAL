@@ -127,6 +127,11 @@ public class SpecialVendingMachine extends RegularVendingMachine {
             }
         }
 
+        // After validating that there are enough bills of the chosen denomination
+        int currentDenominationQuantity = denominationQuantities.get(paymentDenomination - 1);
+        denominationQuantities.set(paymentDenomination - 1, currentDenominationQuantity - paymentQuantity);
+
+
         // Check if the payment is enough
         System.out.println("after:");
         System.out.println("\n===== DEBUG: Vending Machine Items =====");
