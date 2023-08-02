@@ -177,19 +177,39 @@ public class Menu {
 
             switch (option) {
                 case 1:
-                    maintenance.refillItem(rVendingMachine);
+                    if (specialVMChecker == -1) {
+                        maintenance.refillItem(rVendingMachine);
+                    } else if (specialVMChecker == 1) {
+                        maintenance.refillItem(sVendingMachine);
+                    }
                     break;
                 case 2:
-                    maintenance.restockChange(rVendingMachine);
+                    if (specialVMChecker == -1) {
+                        maintenance.restockChange(rVendingMachine);
+                    } else if (specialVMChecker == 1) {
+                        maintenance.restockChange(sVendingMachine);
+                    }
                     break;
                 case 3:
-                    maintenance.updatePrices(rVendingMachine);
+                    if (specialVMChecker == -1) {
+                        maintenance.updatePrices(rVendingMachine);
+                    } else if (specialVMChecker == 1) {
+                        maintenance.updatePrices(sVendingMachine);
+                    }
                     break;
                 case 4:
-                    maintenance.dispenseTotalPayments(rVendingMachine);
+                    if (specialVMChecker == -1) {
+                        maintenance.dispenseTotalPayments(rVendingMachine);
+                    } else if (specialVMChecker == 1) {
+                        maintenance.dispenseTotalPayments(sVendingMachine);
+                    }
                     break;
                 case 5:
-                    rVendingMachine.printSummary();
+                    if (specialVMChecker == -1) {
+                        rVendingMachine.printSummary();
+                    } else if (specialVMChecker == 1) {
+                        sVendingMachine.printSummary();
+                    }
                     break;
                 case 6:
                     System.out.println("Going back to the main menu...");

@@ -151,6 +151,12 @@ public class SpecialVendingMachine extends RegularVendingMachine {
         }
         System.out.println("=======================================");
 
+        // Calculate change and give change
+        double change = paymentAmount - price;
+
+        if (!giveChange(change)) {
+             return false;
+       }
 
         // Print receipt and display updated item quantities
         printMultipleReceipts(purchasedItems, totalSales, transactionCount, paymentAmount - totalCost, soldQuantity, originalQuantities);
@@ -199,16 +205,8 @@ public class SpecialVendingMachine extends RegularVendingMachine {
                 System.out.printf("| Change: $%.2f              %n", change);
             }
 
-            System.out.println("|--------------------------------------------|");
-            System.out.println("|============================================|");
-            System.out.println("|     Updated Denomination Quantities        |");
-            System.out.println("|============================================|");
+            displayUpdatedDenominationQuantities();
 
-            for (int i = 0; i < denominationQuantities.size(); i++) {
-                int denominationValue = denominationValues.get(i);
-                int denominationQuantity = denominationQuantities.get(i);
-                System.out.println("| " + denominationValue + ":\t" + denominationQuantity);
-            }
 
             System.out.println("============================================");
         } catch (IndexOutOfBoundsException e) {

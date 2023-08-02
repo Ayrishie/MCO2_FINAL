@@ -394,7 +394,7 @@ public class RegularVendingMachine {
     public void displayUpdatedDenominationQuantities() {
         System.out.println();
         System.out.println("\u001B[36m|============================================|");
-        System.out.println("\u001B[36m|========= Available Bills For Change =======|");
+        System.out.println("\u001B[36m|========= Updated Bills For Change =======|");
         System.out.println("\u001B[36m|============================================|");
         for (int i = 0; i < denominationQuantities.size(); i++) {
             int denomination = denominationQuantities.get(i);
