@@ -193,8 +193,8 @@ public class SpecialVendingMachine extends RegularVendingMachine {
             if (change >= 0) {
                 System.out.printf("| Change: $%.2f              %n", change);
             }
-            prepareCustomizableProduct(purchasedItems);
 
+            prepareCustomizableProduct(purchasedItems);
 
             displayUpdatedDenominationQuantities();
 
@@ -211,6 +211,43 @@ public class SpecialVendingMachine extends RegularVendingMachine {
         displayItems();
 
     }
+
+    @Override
+    public void printSummary() {
+        try {
+            System.out.println();
+            System.out.println("\u001B[93m====================================");
+            System.out.println("|          Special Item Summary           |");
+            System.out.println("====================================");
+
+            List<String> itemNames = Item.getItemNames();
+
+            for (String itemName : itemNames) {
+                Item item = Item.itemPropertiesMap.get(itemName);
+                int initialQuantity = item.getInitialQuantities().get(0);
+                int soldQuantity = item.getQuantity(); // Get the quantity of the item
+
+                System.out.println("\u001B[97m| Item: \u001B[92m" + itemName);
+                System.out.println("\u001B[97m| Before Quantity: \u001B[92m" + initialQuantity);
+                System.out.println("\u001B[97m| After Quantity: \u001B[92m" + soldQuantity);
+                System.out.println("\u001B[97m| Price: \u001B[92m$" + item.getPrice());
+                System.out.println("\u001B[97m| Calories: \u001B[92m" + item.getCalories());
+                System.out.println("\u001B[97m|----------------------------------");
+            }
+
+            System.out.println("\u001B[97m| Number of transactions: \u001B[92m" + transactionCount);
+            System.out.println("\u001B[97m| Total sales: \u001B[92m" + totalSales);
+            System.out.println("\u001B[93m|----------------------------------\u001B[0m");
+            System.out.println();
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Index out of bounds. Please ensure the item quantities are initialized properly.");
+        } catch (NullPointerException e) {
+            System.out.println("Error: Null pointer. Please ensure the item properties map is not empty.");
+        } catch (Exception e) {
+            System.out.println("An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
 
     public void prepareCustomizableProduct(List<Item> selectedItems) {
         CustomizableProduct customizableProduct = new CustomizableProduct();
