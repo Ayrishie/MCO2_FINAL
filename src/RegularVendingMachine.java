@@ -27,7 +27,7 @@ public class RegularVendingMachine {
 
     protected List<Integer> denominationQuantities;
     Item item;
-    private int quantity;
+    protected int quantity;
     private int price;
 
     private int calories;
