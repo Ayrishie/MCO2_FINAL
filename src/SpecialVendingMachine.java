@@ -131,39 +131,27 @@ public class SpecialVendingMachine extends RegularVendingMachine {
         int currentDenominationQuantity = denominationQuantities.get(paymentDenomination - 1);
         denominationQuantities.set(paymentDenomination - 1, currentDenominationQuantity - paymentQuantity);
 
-
-        // Check if the payment is enough
-        System.out.println("after:");
-        System.out.println("\n===== DEBUG: Vending Machine Items =====");
-        System.out.println("| No. | Item              | Quantity | Price | Calories |");
-        System.out.println("|-----|-------------------|----------|-------|----------|");
-
-        for (int i = 0; i < itemNames.size(); i++) {
-            String itemName = itemNames.get(i);
-            Item item = Item.getItemProperties(itemName);
-
-            int slot = i + 1;
-            quantity = item.getQuantity();
-            price = item.getPrice();
-            calories = item.getCalories();
-
-            System.out.printf("| %3d | %-17s | %8d | %5.2f | %8d |%n", slot, itemName, quantity, price, calories);
-        }
-        System.out.println("=======================================");
-
         // Calculate change and give change
-        double change = paymentAmount - price;
+        // Calculate change and give change
+        double change = paymentAmount - totalCost;
 
-        if (!giveChange(change)) {
-             return false;
-       }
+        if (change < 0) {
+            System.out.println("Insufficient payment. Cannot complete the transaction.");
+            return false;
+        } else if (change > 0 && !giveChange(change)) {
+            System.out.println("Unable to give change.");
+            return false;
+        }
+
+        System.out.println("Change: $" + change);
+
 
         // Print receipt and display updated item quantities
         printMultipleReceipts(purchasedItems, totalSales, transactionCount, paymentAmount - totalCost, soldQuantity, originalQuantities);
-
-
         return true;
     }
+
+
 
 
 
@@ -204,6 +192,7 @@ public class SpecialVendingMachine extends RegularVendingMachine {
             if (change >= 0) {
                 System.out.printf("| Change: $%.2f              %n", change);
             }
+
 
             displayUpdatedDenominationQuantities();
 
