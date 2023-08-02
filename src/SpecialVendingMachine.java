@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.List;
 
 /**
  * A class representing a special vending machine that inherits features from RegularVendingMachine.
@@ -156,8 +157,8 @@ public class SpecialVendingMachine extends RegularVendingMachine {
 
 
 
-    private void printMultipleReceipts(List<Item> purchasedItems, double totalSales, int transactionCount, double change, int soldQuantity, List<Integer> originalQuantities) {
-        try {
+   private void printMultipleReceipts(List<Item> purchasedItems, double totalSales, int transactionCount, double change, int soldQuantity, List<Integer> originalQuantities) {
+            try {
 
             Scanner scanner = new Scanner(System.in); // Create a Scanner object
 
@@ -192,6 +193,7 @@ public class SpecialVendingMachine extends RegularVendingMachine {
             if (change >= 0) {
                 System.out.printf("| Change: $%.2f              %n", change);
             }
+            prepareCustomizableProduct(purchasedItems);
 
 
             displayUpdatedDenominationQuantities();
@@ -208,6 +210,11 @@ public class SpecialVendingMachine extends RegularVendingMachine {
 
         displayItems();
 
+    }
+
+    public void prepareCustomizableProduct(List<Item> selectedItems) {
+        CustomizableProduct customizableProduct = new CustomizableProduct();
+        customizableProduct.prepareProduct(selectedItems);
     }
 
 
