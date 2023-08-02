@@ -30,6 +30,8 @@ public class Item {
         itemPropertiesMap.put("Softdrink", new Item("Softdrink", ITEM_CAPACITY, DEFAULT_PRICE, 0));
     }
 
+    private int soldQuantity;
+
     private String itemName;
     private int quantity;
     private double price;
@@ -45,6 +47,7 @@ public class Item {
         this.calories = calories;
         soldItemQuantities = new ArrayList<>(SLOT_COUNT);
         initialQuantities = new ArrayList<>(SLOT_COUNT);
+        this.soldQuantity = 0; // Initialize sold quantity to 0 for each item
 
         for (int i = 0; i < SLOT_COUNT; i++) {
             soldItemQuantities.add(0);
@@ -102,9 +105,19 @@ public class Item {
         return new ArrayList<>(soldItemQuantities);
     }
 
-    public void decrementQuantity(int quantity) {
-        this.quantity -= quantity;
+    public void updateSoldQuantity(int quantity) {
+        soldQuantity += quantity;
+        this.quantity -= quantity; // update the quantity after the sale
     }
+
+
+    // Method to get the remaining quantity after sales
+    // Method to get the remaining quantity after sales
+    public int getRemainingQuantity() {
+        return quantity;
+    }
+
+
 
 
 

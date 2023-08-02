@@ -11,6 +11,7 @@ public class Menu {
     private SpecialVendingMachine sVendingMachine;
     private final Maintenance maintenance;
     private int specialVMChecker;
+    private Item item;
 
 
     /**
@@ -22,6 +23,7 @@ public class Menu {
         rVendingMachine = null;
         sVendingMachine = null;
         maintenance = new Maintenance(); // Create an instance of Maintenance
+
     }
 
     /**
@@ -288,10 +290,11 @@ public class Menu {
      * payment.
      */
 
+
+
     private void testRegularVendingFeatures() {
 
         rVendingMachine.displayItems();
-
         System.out.print("Enter the item number you want to purchase (1-" + rVendingMachine.getSlotCount() + "): ");
         int itemNumber;
         try {
@@ -363,7 +366,16 @@ public class Menu {
             List<Double> chosenItemPrices = new ArrayList<>();
             List<Integer> chosenItemCalories = new ArrayList<>();
 
+            // Reset the lists for selected items and their details after a successful transaction
+            selectedSlotNumbers.clear();
+            quantities.clear();
+            chosenItemPrices.clear();
+            chosenItemCalories.clear();
+
+
+
             while (true) {
+
                 sVendingMachine.displayItems();
                 System.out.print("Enter the item number you want to purchase (1-" + sVendingMachine.getSlotCount() + ") or -1 to cancel: ");
                 try {
@@ -522,7 +534,7 @@ public class Menu {
                 }
                 return;
             }
-
+            sVendingMachine.displayItems();
 
             // Process the transaction with the given selectedSlotNumbers, quantities, paymentDenomination, and paymentQuantity
             if (sVendingMachine.processTransaction(selectedSlotNumbers, quantities, paymentDenomination, paymentQuantity)) {
@@ -532,14 +544,14 @@ public class Menu {
                     int slot = selectedSlotNumbers.get(i);
                     int qty = quantities.get(i);
                     Item selectedItem = Item.getItemProperties(Item.getItemNames().get(slot - 1));
-                    selectedItem.decrementQuantity(qty);
+
                     selectedItem.getSoldItemQuantities().set(slot - 1, selectedItem.getSoldItemQuantities().get(slot - 1) + qty);
 
-                    // Print the updated quantity for the selected item
-                    System.out.println("Updated quantity for item " + Item.getItemNames() + ": " + selectedItem.getQuantity());
+
+
+
                 }
                 System.out.println("Transaction completed successfully.");
-
 
             } else {
                 System.out.println("Transaction failed.");
