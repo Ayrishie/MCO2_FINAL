@@ -24,10 +24,9 @@ public class Maintenance {
      *
      * @return A new instance of the RegularVendingMachine class.
      */
-    public static RegularVendingMachine getVendingMachine() {
-        return new RegularVendingMachine();
+    public static SpecialVendingMachine getVendingMachine() {
+        return new SpecialVendingMachine();
     }
-
 
     /**
      * Sets the vending machine associated with the maintenance operations.

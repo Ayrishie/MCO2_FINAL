@@ -1,16 +1,17 @@
 
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * The Menu class represents the main menu of the vending machine.
  * It provides options for customer operations and maintenance operations.
  */
 public class Menu {
-    Scanner scanner;
-    private RegularVendingMachine vendingMachine;
-    private Maintenance maintenance;
+    private final Scanner scanner;
+    private RegularVendingMachine rVendingMachine;
+    private SpecialVendingMachine sVendingMachine;
+    private final Maintenance maintenance;
+    private int specialVMChecker;
 
-    private int specialVMChecker = 0;
 
     /**
      * Constructs a new Menu object.
@@ -18,7 +19,8 @@ public class Menu {
      */
     public Menu() {
         scanner = new Scanner(System.in);
-        vendingMachine = null;
+        rVendingMachine = null;
+        sVendingMachine = null;
         maintenance = new Maintenance(); // Create an instance of Maintenance
     }
 
@@ -88,108 +90,69 @@ public class Menu {
      * special vending machine.
      */
     public void createVendingMachine() {
-        System.out.println("\u001B[36m===============================");
-        System.out.println("|    \u001B[34mR for Regular          \u001B[36m|");
-        System.out.println("|    \u001B[34mS for Special          \u001B[36m|");
-        System.out.println("===============================\u001B[0m");
-        System.out.println("\u001B[0mEnter your choice (R or S)");
-
-        System.out.print("\t\t\t=> ");
-        String machineType = scanner.next();
-        scanner.nextLine(); // Consume the newline character
-
-<<<<<<< Updated upstream
-        while (!machineType.equalsIgnoreCase("R")) {
-=======
-        while (!machineType.equalsIgnoreCase("R") && !machineType.equalsIgnoreCase("S")) {
->>>>>>> Stashed changes
+        while (true) {
             System.out.println("\u001B[36m===============================");
             System.out.println("|    \u001B[34mR for Regular          \u001B[36m|");
             System.out.println("|    \u001B[34mS for Special          \u001B[36m|");
             System.out.println("===============================\u001B[0m");
-            System.out.println("\u001B[31m No Vending Machine Created!");
             System.out.println("\u001B[0mEnter your choice (R or S)");
+
             System.out.print("\t\t\t=> ");
-            machineType = scanner.next();
+            String machineType = scanner.next();
             scanner.nextLine(); // Consume the newline character
-<<<<<<< Updated upstream
-=======
-        }
-        if (machineType.equalsIgnoreCase("R")) {
-            vendingMachine = new RegularVendingMachine() {
-                @Override
-                protected void printReceipt(int slot, int quantity, double change) {
 
+            try {
+                if (machineType.equalsIgnoreCase("R")) {
+                    rVendingMachine = new RegularVendingMachine();
+                    System.out.println();
+                    System.out.println();
+                    String createVMText =
+                            "\u001B[35m\t  ============================\n" +
+                                    "\t  |                          |\n" +
+                                    "\t  |  Regular Vending Machine |\n" +
+                                    "\t  |       created.           |\n" +
+                                    "\t  |                          |\n" +
+                                    "\t  ============================\u001B[0m";
+
+                    System.out.println(createVMText);
+                    System.out.println();
+                    System.out.println();
+                    specialVMChecker = -1;
+                    break; // Exit the loop after successful creation
+                } else if (machineType.equalsIgnoreCase("S")) {
+                    this.sVendingMachine = new SpecialVendingMachine();
+                    System.out.println();
+                    System.out.println();
+                    String createVMText =
+                            "\u001B[35m\t  ============================\n" +
+                                    "\t  |                          |\n" +
+                                    "\t  |  Special Vending Machine |\n" +
+                                    "\t  |       created.           |\n" +
+                                    "\t  |                          |\n" +
+                                    "\t  ============================\u001B[0m";
+
+                    System.out.println(createVMText);
+                    System.out.println();
+                    System.out.println();
+
+                    specialVMChecker = 1;
+                    break; // Exit the loop after successful creation
+                } else {
+                    System.out.println("Invalid choice. Please enter either 'R' or 'S'.");
                 }
-            };
-            System.out.println();
-            System.out.println();
-            String createVMText =
-                    "\u001B[35m\t  ============================\n" +
-                            "\t  |                          |\n" +
-                            "\t  |  Regular Vending Machine |\n" +
-                            "\t  |       created.           |\n" +
-                            "\t  |                          |\n" +
-                            "\t  ============================\u001B[0m";
-
-            System.out.println(createVMText);
-            System.out.println();
-            System.out.println();
-            specialVMChecker = -1;
-
-        } else {
-            vendingMachine = new SpecialVendingMachine();
-            System.out.println();
-            System.out.println();
-            String createVMText =
-                    "\u001B[35m\t  ============================\n" +
-                            "\t  |                          |\n" +
-                            "\t  |  Special Vending Machine |\n" +
-                            "\t  |       created.           |\n" +
-                            "\t  |                          |\n" +
-                            "\t  ============================\u001B[0m";
-
-            System.out.println(createVMText);
-            System.out.println();
-            System.out.println();
-
-            specialVMChecker = 1;
->>>>>>> Stashed changes
-        }
-
-    private void testVendingFeatures() {
-        if (specialVMChecker == -1) {
-            testRegularVendingFeatures();
-        } else if (specialVMChecker == 1) {
-            testSpecialVendingFeatures();
-        } else {
-            System.out.println("Invalid vending machine type. Please create a vending machine first.");
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter either 'R' or 'S'.");
+                scanner.nextLine(); // Consume the invalid input
+            }
         }
     }
 
-        vendingMachine = new RegularVendingMachine();
-        System.out.println();
-        System.out.println();
-        String createVMText =
-                "\u001B[35m\t  ============================\n" +
-                        "\t  |                          |\n" +
-                        "\t  |  Regular Vending Machine |\n" +
-                        "\t  |       created.           |\n" +
-                        "\t  |                          |\n" +
-                        "\t  ============================\u001B[0m";
-
-        System.out.println(createVMText);
-        System.out.println();
-        System.out.println();
-
-    }
 
     /**
      * The performMaintenance() function displays a maintenance menu and allows the user to perform
      * various maintenance tasks on a vending machine.
      */
     private void performMaintenance() {
-
 
 
         int option;
@@ -212,19 +175,19 @@ public class Menu {
 
             switch (option) {
                 case 1:
-                    maintenance.refillItem(vendingMachine);
+                    maintenance.refillItem(rVendingMachine);
                     break;
                 case 2:
-                    maintenance.restockChange(vendingMachine);
+                    maintenance.restockChange(rVendingMachine);
                     break;
                 case 3:
-                    maintenance.updatePrices(vendingMachine);
+                    maintenance.updatePrices(rVendingMachine);
                     break;
                 case 4:
-                    maintenance.dispenseTotalPayments(vendingMachine);
+                    maintenance.dispenseTotalPayments(rVendingMachine);
                     break;
                 case 5:
-                    vendingMachine.printSummary();
+                    rVendingMachine.printSummary();
                     break;
                 case 6:
                     System.out.println("Going back to the main menu...");
@@ -247,24 +210,33 @@ public class Menu {
         do {
             clearScreen();
             showColoredMenu();
-            choice = scanner.nextInt();
-            scanner.nextLine(); // Consume the newline character
+            try {
+                choice = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
 
-            switch (choice) {
-                case 1:
-                    createVendingMachine();
-                    break;
-                case 2:
-                    testVendingMachineSubMenu();
-                    break;
-                case 3:
-                    System.out.println("Exiting...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
+                switch (choice) {
+                    case 1 -> createVendingMachine();
+                    case 2 -> testVendingMachineSubMenu();
+                    case 3 -> System.out.println("Exiting...");
+                    default -> System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine(); // Consume the invalid input
+                choice = 0; // Set choice to 0 to continue the loop
             }
         } while (choice != 3);
+    }
+
+
+    private void testVendingFeatures() {
+        if (specialVMChecker == -1) {
+            testRegularVendingFeatures();
+        } else if (specialVMChecker == 1) {
+            testSpecialVendingFeatures();
+        } else {
+            System.out.println("Invalid vending machine type. Please create a vending machine first.");
+        }
     }
 
     /**
@@ -272,11 +244,12 @@ public class Menu {
      * allows the user to choose an option.
      */
     public void testVendingMachineSubMenu() {
-        if (vendingMachine == null) {
+        if (rVendingMachine == null && sVendingMachine == null) {
             System.out.println("\u001b[31m No Vending Machine created yet.");
             System.out.println("\u001b[31m Please create a Vending Machine first.\u001B[0m");
             return;
         }
+
         int option;
         do {
             clearScreen();
@@ -284,15 +257,12 @@ public class Menu {
             option = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
 
-
             switch (option) {
                 case 1:
                     testVendingFeatures();
-
                     break;
                 case 2:
                     performMaintenance();
-
                     break;
                 case 3:
                     System.out.println("Going back to the main menu...");
@@ -303,6 +273,7 @@ public class Menu {
             }
         } while (option != 3);
     }
+
 
     /**
      * The clearScreen() function clears the console screen in Java.
@@ -316,41 +287,51 @@ public class Menu {
      * The function allows the user to test vending machine features by selecting an item and making a
      * payment.
      */
-    protected void testRegularVendingFeatures() {
-        vendingMachine.displayItems();
 
-        System.out.print("Enter the item number you want to purchase (1-" + vendingMachine.getSlotCount() + "): ");
-        int itemNumber = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+    private void testRegularVendingFeatures() {
 
-        if ((itemNumber < 1) || (itemNumber > 8)){
+        rVendingMachine.displayItems();
+
+        System.out.print("Enter the item number you want to purchase (1-" + rVendingMachine.getSlotCount() + "): ");
+        int itemNumber;
+        if (scanner.hasNextInt()) {
+            itemNumber = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+        } else {
+            System.out.println("Invalid input. Please enter a valid item number.");
+            return;
+        }
+        // Adjust the itemNumber value to match zero-based indexing
+        int slotNumber = itemNumber;
+
+        System.out.println("[menu DEBUG] Slot number: " + slotNumber);
+        System.out.println("[menu DEBUG] Slot count: " + rVendingMachine.getSlotCount());
+
+        if ((slotNumber < 0) || (slotNumber >= rVendingMachine.getSlotCount())) {
             System.out.println("Item slot doesn't exist");
             return;
         }
-if ((itemNumber < 1) || (itemNumber > 8)) {
-                System.out.println("Item slot doesn't exist");
-                return;
-            }
 
 
-        vendingMachine.displayUpdatedDenominationQuantities();
+        rVendingMachine.displayUpdatedDenominationQuantities();
         System.out.print("Enter the payment denomination (1-9): ");
-        int paymentDenomination = scanner.nextInt();
-        scanner.nextLine(); // Consume the newline character
+        int paymentDenomination;
+        if (scanner.hasNextInt()) {
+            paymentDenomination = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
+        } else {
+            System.out.println("Invalid input. Please enter a valid payment denomination.");
+            return;
+        }
 
-<<<<<<< Updated upstream
-        if ((paymentDenomination < 1) || (paymentDenomination > 9)){
+        System.out.println("[menu DEBUG] Payment Denomination: " + paymentDenomination);
+
+        if ((paymentDenomination < 1) || (paymentDenomination > 9)) {
             System.out.println("Denomination doesn't exist");
             return;
         }
-=======
-            if ((paymentDenomination < 1) || (paymentDenomination > 9)) {
-                System.out.println("Denomination doesn't exist");
-                return;
-            }
->>>>>>> Stashed changes
 
-        if (vendingMachine.processTransaction(itemNumber - 1, paymentDenomination)) {
+        if (rVendingMachine.processTransaction(slotNumber, paymentDenomination)) {
             System.out.println();
             System.out.println("Transaction completed successfully.");
             System.out.println();
@@ -359,67 +340,135 @@ if ((itemNumber < 1) || (itemNumber > 8)) {
             System.out.println("Transaction failed.");
             System.out.println();
         }
+
     }
 
-<<<<<<< Updated upstream
-}
-=======
+
     private void testSpecialVendingFeatures() {
-        // Special Vending Machine
-        List<Integer> chosenItems = new ArrayList<>();
-        List<Double> chosenItemPrices = new ArrayList<>();
-        List<Integer> chosenItemCalories = new ArrayList<>();
 
-        int itemNumber;
-        int quantity;
-        double itemPrice;
-        int itemCalories;
+        try {  // Special Vending Machine
+            double itemPrice;
+            int itemCalories;
+            boolean continueSelecting = true;
+            int quantity = 0;
+            int itemNumber;
 
-        boolean continueSelecting = true;
-        while (continueSelecting) {
-            vendingMachine.displayItems();
-            System.out.print("Enter the item number you want to purchase (1-" + vendingMachine.getSlotCount() + "): ");
-            itemNumber = scanner.nextInt();
+            List<Integer> selectedSlotNumbers = new ArrayList<>();
+            List<Integer> quantities = new ArrayList<>();
+            List<Double> chosenItemPrices = new ArrayList<>();
+            List<Integer> chosenItemCalories = new ArrayList<>();
+
+
+            while (continueSelecting) {
+                sVendingMachine.displayItems();
+                System.out.print("Enter the item number you want to purchase (1-" + sVendingMachine.getSlotCount() + "): ");
+                itemNumber = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+
+                if ((itemNumber < 1) || (itemNumber > sVendingMachine.getSlotCount())) {
+                    System.out.println("Item slot doesn't exist");
+                    continue; // Ask for the item number again
+                }
+
+                System.out.print("Enter the quantity you want to purchase for item " + itemNumber + ": ");
+                quantity = scanner.nextInt();
+                scanner.nextLine(); // Consume the newline character
+
+                if (quantity <= 0) {
+                    System.out.println("Invalid quantity. Please enter a positive value.");
+                    continue; // Ask for the quantity again
+                } else if (quantity > 10) {
+                    System.out.println("Maximum quantity allowed is 10. Please enter a valid quantity.");
+                    continue; // Ask for the quantity again
+                }
+
+
+                String itemName = Item.getItemNames().get(itemNumber - 1);
+                Item item = Item.getItemProperties(itemName);
+                itemPrice = item.getPrice();
+                itemCalories = item.getCalories();
+
+                double totalPrice = itemPrice * quantity;
+                int totalCalories = itemCalories * quantity;
+
+                System.out.println("Total Price for " + quantity + " items: " + totalPrice);
+                System.out.println("Total Calories for " + quantity + " items: " + totalCalories);
+
+                // Add the selected item and its details to the lists
+                selectedSlotNumbers.add(itemNumber);
+                quantities.add(quantity);
+                chosenItemPrices.add(totalPrice);
+                chosenItemCalories.add(totalCalories);
+
+                System.out.print("Do you want to purchase another item? (Y/N): ");
+                String choice = scanner.nextLine().trim().toUpperCase();
+                if (choice.equals("N")) {
+                    continueSelecting = false;
+
+                } else {
+                    // Clear the lists for the next purchase
+                    selectedSlotNumbers.clear();
+                    quantities.clear();
+                    chosenItemPrices.clear();
+                    chosenItemCalories.clear();
+                }
+            }
+
+            System.out.println("Debug: selectedSlotNumbers: " + selectedSlotNumbers);
+            System.out.println("Debug: quantities: " + quantities);
+            System.out.println("Debug: chosenItemPrices: " + chosenItemPrices);
+            System.out.println("Debug: chosenItemCalories: " + chosenItemCalories);
+
+
+            // Calculate the total price of all selected items
+            double totalCost = 0;
+            for (double price : chosenItemPrices) {
+                totalCost += price;
+            }
+
+            // Display the selected items and their respective prices and calories
+
+            System.out.println("Selected Items and Their Details:");
+            for (int i = 0; i < selectedSlotNumbers.size(); i++) {
+                itemNumber = selectedSlotNumbers.get(i) - 1; // Adjust itemNumber to 0-indexed
+                Item item = Item.getItemProperties(sVendingMachine.getItemSlots().get(itemNumber));
+                itemPrice = chosenItemPrices.get(i);
+                itemCalories = chosenItemCalories.get(i);
+                System.out.println(item.getItemName() + " - Price: " + itemPrice + " - Calories: " + itemCalories);
+            }
+
+
+            // Display the total price
+            System.out.println("Total Price of the Selected Items: " + totalCost);
+            sVendingMachine.displayUpdatedDenominationQuantities();
+
+            System.out.print("Enter the payment denomination (1-9): ");
+            int paymentDenomination = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
 
-            if ((itemNumber < 1) || (itemNumber > vendingMachine.getSlotCount())) {
-                System.out.println("Item slot doesn't exist");
-                continue; // Ask for the item number again
-            }
-            System.out.print("Enter the quantity you want to purchase for item " + itemNumber + ": ");
-            quantity = scanner.nextInt();
-
-            if (quantity <= 0) {
-                System.out.println("Invalid quantity. Please enter a positive value.");
-                continue; // Ask for the quantity again
-            } else if (quantity > 10) {
-                System.out.println("Maximum quantity allowed is 10. Please enter a valid quantity.");
-                continue; // Ask for the quantity again
+            if ((paymentDenomination < 1) || (paymentDenomination > 9)) {
+                System.out.println("Denomination doesn't exist");
+                return;
             }
 
-            itemPrice = vendingMachine.getItemPrices().get(itemNumber - 1);
-            itemCalories = vendingMachine.getItemCalories().get(itemNumber - 1);
 
-            double totalPrice = itemPrice * quantity;
-            int totalCalories = itemCalories * quantity;
+            // Prompt for quantity of selected denomination
+            System.out.print("Enter the quantity for denomination " + paymentDenomination + ": ");
+            int paymentQuantity = scanner.nextInt();
+            scanner.nextLine(); // Consume the newline character
 
-            System.out.println("Total Price for " + quantity + " items: " + totalPrice);
-            System.out.println("Total Calories for " + quantity + " items: " + totalCalories);
-
-            // Add the selected item and its details to the lists
-            chosenItems.add(itemNumber);
-            chosenItemPrices.add(totalPrice);
-            chosenItemCalories.add(totalCalories);
-
-            System.out.print("Do you want to purchase another item? (Y/N): ");
-            String choice = scanner.nextLine().trim().toUpperCase();
-            if (!choice.equals("Y")) {
-                continueSelecting = false;
+            // Process the transaction with the given selectedSlotNumbers, quantities, paymentDenomination, and paymentQuantity
+            // Process the transaction with the given slot, itemNumber, quantity, and paymentDenomination
+            if (sVendingMachine.processTransaction(selectedSlotNumbers, quantities, paymentDenomination, paymentQuantity)) {
+                System.out.println("Transaction completed successfully.");
+            } else {
+                System.out.println("Transaction failed.");
             }
-
+        } catch (InputMismatchException e) {
+            // Catch and handle the InputMismatchException
+            System.out.println("Invalid input. Please enter a valid choice.");
+            e.printStackTrace(); // You can choose to print the stack trace for debugging purposes
         }
-
-
     }
+
 }
->>>>>>> Stashed changes
