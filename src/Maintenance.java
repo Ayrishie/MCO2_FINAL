@@ -29,9 +29,6 @@ public class Maintenance {
     }
 
     /**
-     * Sets the vending machine associated with the maintenance operations.
-     *
-     * @param vendingMachine The RegularVendingMachine object to set.
      */
     public void setVendingMachine(RegularVendingMachine vendingMachine) {
         this.vendingMachine = vendingMachine;

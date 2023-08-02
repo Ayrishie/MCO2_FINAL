@@ -474,7 +474,7 @@ public class Menu {
             System.out.println("Debug: chosenItemCalories: " + chosenItemCalories);
 
 
-            // Calculate the total price of all selected items
+
             // Calculate the total price of all selected items
             double totalCost = 0;
             for (double price : chosenItemPrices) {
@@ -504,13 +504,11 @@ public class Menu {
                 System.out.println("Denomination doesn't exist");
                 return;
             }
-
-
-
             // Prompt for quantity of selected denomination
             System.out.print("Enter the quantity for denomination " + paymentDenomination + ": ");
             int paymentQuantity = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
+
 
             if (paymentQuantity == -1) {
                 System.out.println("Transaction canceled. Returning to the main menu.");
@@ -526,12 +524,9 @@ public class Menu {
             }
 
 
-
-
             // Process the transaction with the given selectedSlotNumbers, quantities, paymentDenomination, and paymentQuantity
             if (sVendingMachine.processTransaction(selectedSlotNumbers, quantities, paymentDenomination, paymentQuantity)) {
                 System.out.println("Transaction completed successfully.");
-
                 // Update the item quantities after successful transaction
                 for (int i = 0; i < selectedSlotNumbers.size(); i++) {
                     int slot = selectedSlotNumbers.get(i);
@@ -539,7 +534,13 @@ public class Menu {
                     Item selectedItem = Item.getItemProperties(Item.getItemNames().get(slot - 1));
                     selectedItem.decrementQuantity(qty);
                     selectedItem.getSoldItemQuantities().set(slot - 1, selectedItem.getSoldItemQuantities().get(slot - 1) + qty);
+
+                    // Print the updated quantity for the selected item
+                    System.out.println("Updated quantity for item " + Item.getItemNames() + ": " + selectedItem.getQuantity());
                 }
+                System.out.println("Transaction completed successfully.");
+
+
             } else {
                 System.out.println("Transaction failed.");
             }
